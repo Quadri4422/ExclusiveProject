@@ -1,0 +1,85 @@
+{% extends '../shared/layout.html' %}
+{% load static %}
+
+{% block title %}
+    log in - Exclusive101
+{% endblock title %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans min-h-[85vh] flex items-center">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center w-full">
+    
+    <!-- Left Banner Image Column -->
+    <div class="lg:col-span-7 flex justify-center lg:justify-start">
+      <img 
+        src="{% static 'image/Side Image.png' %}" 
+        alt="Shopping cart and mobile phone preview" 
+        class="w-full max-w-lg lg:max-w-full h-auto object-cover rounded"
+      >
+    </div>
+
+    <!-- Right Form Column -->
+    <div class="lg:col-span-5 max-w-md w-full mx-auto space-y-8">
+      
+      <!-- Title & Subtitle Header -->
+      <div class="space-y-3">
+        <h1 class="text-3xl sm:text-4xl font-medium tracking-wide text-black">
+          Log in to Exclusive
+        </h1>
+        <p class="text-xs sm:text-sm text-black">
+          Enter your details below
+        </p>
+      </div>
+
+      <!-- Log In Form -->
+      <form action="#" method="POST" class="space-y-8">
+        {% csrf_token %}
+
+        <!-- Input Fields Group -->
+        <div class="space-y-6">
+          <div>
+            <input 
+              type="text" 
+              name="email_or_phone" 
+              placeholder="Email or Phone Number" 
+              required 
+              class="w-full border-b border-gray-300 py-2.5 text-xs sm:text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+            >
+          </div>
+
+          <div>
+            <input 
+              type="password" 
+              name="password" 
+              placeholder="Password" 
+              required 
+              class="w-full border-b border-gray-300 py-2.5 text-xs sm:text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+            >
+          </div>
+        </div>
+
+        <!-- Action Row: Log In Button & Forget Password Link -->
+        <div class="flex items-center justify-between pt-2">
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            class="px-12 py-3.5 bg-[#DB4444] text-white rounded text-xs sm:text-sm font-medium hover:bg-red-600 transition-colors duration-200"
+          >
+            Log In
+          </button>
+
+          <!-- Forget Password Link -->
+          <a 
+            href="#" 
+            class="text-xs sm:text-sm text-[#DB4444] font-medium hover:underline transition-colors"
+          >
+            Forget Password?
+          </a>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</section>
+{% endblock content %}

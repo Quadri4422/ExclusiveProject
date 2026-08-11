@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # Custom Apps
-    'mainsite',
+    'mainsite', 'account'
 ]
 
 MIDDLEWARE = [

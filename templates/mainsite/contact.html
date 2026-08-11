@@ -1,0 +1,127 @@
+{% extends '../shared/layout.html' %}
+{% load static %}
+
+{% block title %}
+    contact - Exclusive101
+{% endblock title %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-12">
+  
+  <!-- Breadcrumb Navigation -->
+  <nav class="text-xs sm:text-sm text-gray-400 flex items-center space-x-2">
+    <a href="#" class="hover:text-black transition-colors">Home</a>
+    <span>/</span>
+    <span class="text-black font-medium">Contact</span>
+  </nav>
+
+  <!-- Contact Container Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- Left Column: Contact Information -->
+    <div class="lg:col-span-4 bg-white rounded shadow-sm p-8 space-y-8 border border-gray-100">
+      
+      <!-- Call To Us Section -->
+      <div class="space-y-4">
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 rounded-full bg-[#DB4444] text-white flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+            </svg>
+          </div>
+          <h3 class="font-medium text-black text-base">Call To Us</h3>
+        </div>
+        
+        <p class="text-xs text-black leading-relaxed">
+          We are available 24/7, 7 days a week.
+        </p>
+        <p class="text-xs text-black">
+          Phone: +8801611112222
+        </p>
+      </div>
+
+      <!-- Divider -->
+      <hr class="border-gray-200">
+
+      <!-- Write To Us Section -->
+      <div class="space-y-4">
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 rounded-full bg-[#DB4444] text-white flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <h3 class="font-medium text-black text-base">Write To US</h3>
+        </div>
+
+        <p class="text-xs text-black leading-relaxed">
+          Fill out our form and we will contact you within 24 hours.
+        </p>
+        <p class="text-xs text-black">
+          Emails: customer@exclusive.com
+        </p>
+        <p class="text-xs text-black">
+          Emails: support@exclusive.com
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Contact Form -->
+    <div class="lg:col-span-8 bg-white rounded shadow-sm p-8 border border-gray-100">
+      <form action="#" method="POST" class="space-y-8">
+        {% csrf_token %}
+
+        <!-- Input Fields Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <input 
+            type="text" 
+            name="name" 
+            placeholder="Your Name *" 
+            required 
+            class="w-full bg-[#F5F5F5] rounded px-4 py-3.5 text-xs text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#DB4444]"
+          >
+          <input 
+            type="email" 
+            name="email" 
+            placeholder="Your Email *" 
+            required 
+            class="w-full bg-[#F5F5F5] rounded px-4 py-3.5 text-xs text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#DB4444]"
+          >
+          <input 
+            type="tel" 
+            name="phone" 
+            placeholder="Your Phone *" 
+            required 
+            class="w-full bg-[#F5F5F5] rounded px-4 py-3.5 text-xs text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#DB4444]"
+          >
+        </div>
+
+        <!-- Textarea -->
+        <div>
+          <textarea 
+            name="message" 
+            rows="7" 
+            placeholder="Your Massage" 
+            required 
+            class="w-full bg-[#F5F5F5] rounded p-4 text-xs text-black placeholder-gray-400 resize-none focus:outline-none focus:ring-1 focus:ring-[#DB4444]"
+          ></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-end">
+          <button 
+            type="submit" 
+            class="w-full sm:w-auto px-12 py-3.5 bg-[#DB4444] text-white rounded text-xs font-medium hover:bg-red-600 transition-colors duration-200"
+          >
+            Send Massage
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+</section>
+{% endblock content %}

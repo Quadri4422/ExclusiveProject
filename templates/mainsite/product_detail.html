@@ -1,0 +1,358 @@
+{% extends '../shared/layout.html' %}
+{% load static %}
+
+{% block title %}
+    product detail - Exclusive101
+{% endblock title %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-16">
+  
+  <!-- Breadcrumb Navigation -->
+  <nav class="text-xs sm:text-sm text-gray-400 flex flex-wrap items-center gap-2">
+    <a href="#" class="hover:text-black transition-colors">Account</a>
+    <span>/</span>
+    <a href="#" class="hover:text-black transition-colors">Gaming</a>
+    <span>/</span>
+    <span class="text-black font-medium">Havic HV G-92 Gamepad</span>
+  </nav>
+
+  <!-- Main Product Detail Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+    
+    <!-- Gallery Column (Thumbnails + Main Image) -->
+    <div class="lg:col-span-7 flex flex-col-reverse md:flex-row gap-4">
+      
+      <!-- Thumbnails Stack -->
+      <div class="flex md:flex-col gap-4 overflow-x-auto md:overflow-visible shrink-0">
+        <button type="button" class="w-20 h-20 sm:w-24 sm:h-24 bg-[#F5F5F5] rounded flex items-center justify-center p-2 border border-transparent hover:border-black transition-colors focus:outline-none">
+          <img src="{% static 'images/ps5-dock.png' %}" alt="Thumbnail 1" class="max-h-full max-w-full object-contain">
+        </button>
+        <button type="button" class="w-20 h-20 sm:w-24 sm:h-24 bg-[#F5F5F5] rounded flex items-center justify-center p-2 border border-transparent hover:border-black transition-colors focus:outline-none">
+          <img src="{% static 'images/ps5-front.png' %}" alt="Thumbnail 2" class="max-h-full max-w-full object-contain">
+        </button>
+        <button type="button" class="w-20 h-20 sm:w-24 sm:h-24 bg-[#F5F5F5] rounded flex items-center justify-center p-2 border border-transparent hover:border-black transition-colors focus:outline-none">
+          <img src="{% static 'images/ps5-side.png' %}" alt="Thumbnail 3" class="max-h-full max-w-full object-contain">
+        </button>
+        <button type="button" class="w-20 h-20 sm:w-24 sm:h-24 bg-[#F5F5F5] rounded flex items-center justify-center p-2 border border-transparent hover:border-black transition-colors focus:outline-none">
+          <img src="{% static 'images/ps5-angle.png' %}" alt="Thumbnail 4" class="max-h-full max-w-full object-contain">
+        </button>
+      </div>
+
+      <!-- Main Featured Image -->
+      <div class="flex-1 bg-[#F5F5F5] rounded flex items-center justify-center p-6 min-h-80 sm:min-h-125">
+        <img src="{% static 'images/ps5-controller-main.png' %}" alt="Havic HV G-92 Gamepad" class="max-h-100 w-auto object-contain">
+      </div>
+
+    </div>
+
+    <!-- Product Options & Details Column -->
+    <div class="lg:col-span-5 space-y-5">
+      
+      <!-- Title -->
+      <h1 class="text-2xl font-semibold tracking-wide text-black">
+        Havic HV G-92 Gamepad
+      </h1>
+
+      <!-- Backend-Controlled Font Awesome Ratings -->
+      <div class="flex items-center space-x-3 text-xs sm:text-sm">
+        <div class="flex items-center space-x-1 text-amber-500">
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-regular fa-star text-gray-300"></i>
+        </div>
+        <span class="text-gray-400">(150 Reviews)</span>
+        <span class="text-gray-300">|</span>
+        <span class="text-[#00FF66] font-medium">In Stock</span>
+      </div>
+
+      <!-- Price -->
+      <div class="text-2xl font-medium text-black">
+        $192.00
+      </div>
+
+      <!-- Description -->
+      <p class="text-xs sm:text-sm text-black leading-relaxed border-b border-gray-300 pb-6">
+        PlayStation 5 Controller Skin High quality vinyl with air channel adhesive for easy bubble free install & mess free removal Pressure sensitive.
+      </p>
+
+      <!-- Colour Options -->
+      <div class="flex items-center space-x-4 pt-1">
+        <span class="text-sm text-black font-normal">Colours:</span>
+        <div class="flex items-center space-x-2">
+          <button type="button" class="w-5 h-5 rounded-full bg-[#A0BCE0] ring-2 ring-offset-2 ring-black focus:outline-none"></button>
+          <button type="button" class="w-5 h-5 rounded-full bg-[#E07575] focus:outline-none hover:scale-110 transition-transform"></button>
+        </div>
+      </div>
+
+      <!-- Size Options -->
+      <div class="flex items-center space-x-4 pt-1">
+        <span class="text-sm text-black font-normal">Size:</span>
+        <div class="flex items-center space-x-2">
+          <button type="button" class="w-8 h-8 rounded border border-gray-400 flex items-center justify-center text-xs font-medium text-black hover:bg-[#DB4444] hover:text-white hover:border-[#DB4444] transition-colors">XS</button>
+          <button type="button" class="w-8 h-8 rounded border border-gray-400 flex items-center justify-center text-xs font-medium text-black hover:bg-[#DB4444] hover:text-white hover:border-[#DB4444] transition-colors">S</button>
+          <button type="button" class="w-8 h-8 rounded bg-[#DB4444] border border-[#DB4444] flex items-center justify-center text-xs font-medium text-white">M</button>
+          <button type="button" class="w-8 h-8 rounded border border-gray-400 flex items-center justify-center text-xs font-medium text-black hover:bg-[#DB4444] hover:text-white hover:border-[#DB4444] transition-colors">L</button>
+          <button type="button" class="w-8 h-8 rounded border border-gray-400 flex items-center justify-center text-xs font-medium text-black hover:bg-[#DB4444] hover:text-white hover:border-[#DB4444] transition-colors">XL</button>
+        </div>
+      </div>
+
+      <!-- Quantity & Buy Actions Row -->
+      <div class="flex flex-wrap items-center gap-4 pt-2">
+        
+        <!-- Quantity Selector -->
+        <div class="flex items-center border border-gray-400 rounded overflow-hidden">
+          <button type="button" class="w-10 h-11 flex items-center justify-center text-xl font-medium text-black hover:bg-[#DB4444] hover:text-white transition-colors border-r border-gray-400">
+            -
+          </button>
+          <span class="w-14 h-11 flex items-center justify-center text-base font-semibold text-black">
+            2
+          </span>
+          <button type="button" class="w-10 h-11 flex items-center justify-center text-xl font-medium bg-[#DB4444] text-white hover:bg-red-600 transition-colors">
+            +
+          </button>
+        </div>
+
+        <!-- Buy Now Button -->
+        <button type="button" class="flex-1 sm:flex-none px-9 py-3 bg-[#DB4444] text-white text-sm font-medium rounded hover:bg-red-600 transition-colors">
+          Buy Now
+        </button>
+
+        <!-- Wishlist Button -->
+        <button type="button" class="p-2.5 border border-gray-400 rounded hover:border-black transition-colors flex items-center justify-center">
+          <i class="fa-regular fa-heart text-xl text-black"></i>
+        </button>
+
+      </div>
+
+      <!-- Delivery & Return Information Box -->
+      <div class="border border-gray-400 rounded divide-y divide-gray-400 pt-2 mt-6">
+        <div class="p-4 flex items-center space-x-4">
+          <i class="fa-solid fa-truck-fast text-2xl text-black shrink-0"></i>
+          <div class="space-y-1">
+            <h4 class="text-sm font-medium text-black">Free Delivery</h4>
+            <a href="#" class="text-xs font-medium text-black underline">Enter your postal code for Delivery Availability</a>
+          </div>
+        </div>
+
+        <div class="p-4 flex items-center space-x-4">
+          <i class="fa-solid fa-rotate-left text-2xl text-black shrink-0"></i>
+          <div class="space-y-1">
+            <h4 class="text-sm font-medium text-black">Return Delivery</h4>
+            <p class="text-xs text-black">Free 30 Days Delivery Returns. <a href="#" class="underline font-medium">Details</a></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Related Items Section -->
+  <div class="space-y-8 pt-10">
+    
+    <!-- Section Header Badge -->
+    <div class="flex items-center space-x-4">
+      <div class="w-5 h-10 bg-[#DB4444] rounded-sm"></div>
+      <h2 class="text-base font-semibold text-[#DB4444]">Related Item</h2>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      
+      <!-- Card 1: HAVIT HV-G92 Gamepad -->
+      <div class="space-y-3">
+        <!-- Image Container with Hover/Mobile "Add To Cart" Overlay -->
+        <div class="group relative bg-[#F5F5F5] rounded h-64 flex flex-col justify-between overflow-hidden">
+          
+          <!-- Top Badges & Action Buttons -->
+          <div class="p-3 flex justify-between items-start z-10">
+            <span class="bg-[#DB4444] text-white text-xs px-3 py-1 rounded font-medium">
+              -40%
+            </span>
+            <div class="flex flex-col space-y-2">
+              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
+                <i class="fa-regular fa-heart text-xs"></i>
+              </button>
+              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
+                <i class="fa-regular fa-eye text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product Image -->
+          <div class="absolute inset-0 flex items-center justify-center p-6">
+            <img src="{% static 'images/gamepad-red.png' %}" alt="HAVIT HV-G92 Gamepad" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
+          </div>
+
+          <!-- "Add To Cart" Button: Always visible on Mobile/Tablet, visible on hover for Desktop (lg+) -->
+          <button type="button" class="absolute bottom-0 inset-x-0 w-full bg-black text-white py-2.5 text-xs font-medium text-center z-20 transition-all duration-300 ease-in-out opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-full lg:group-hover:opacity-100 lg:group-hover:translate-y-0 hover:bg-gray-900">
+            Add To Cart
+          </button>
+        </div>
+
+        <h3 class="font-medium text-black text-sm truncate">HAVIT HV-G92 Gamepad</h3>
+        <div class="flex items-center space-x-3 text-sm">
+          <span class="text-[#DB4444] font-medium">$120</span>
+          <span class="text-gray-400 line-through">$160</span>
+        </div>
+        
+        <!-- Font Awesome Backend Star Rating Loop -->
+        <div class="flex items-center space-x-2 text-xs">
+          <div class="flex space-x-1 text-amber-500">
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <span class="text-gray-400 font-medium">(88)</span>
+        </div>
+      </div>
+
+
+      <!-- Card 2: AK-900 Wired Keyboard -->
+      <div class="space-y-3">
+        <div class="group relative bg-[#F5F5F5] rounded h-64 flex flex-col justify-between overflow-hidden">
+          
+          <div class="p-3 flex justify-between items-start z-10">
+            <span class="bg-[#DB4444] text-white text-xs px-3 py-1 rounded font-medium">
+              -35%
+            </span>
+            <div class="flex flex-col space-y-2">
+              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
+                <i class="fa-regular fa-heart text-xs"></i>
+              </button>
+              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
+                <i class="fa-regular fa-eye text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="absolute inset-0 flex items-center justify-center p-6">
+            <img src="{% static 'images/keyboard.png' %}" alt="AK-900 Wired Keyboard" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
+          </div>
+
+          <!-- Add To Cart -->
+          <button type="button" class="absolute bottom-0 inset-x-0 w-full bg-black text-white py-2.5 text-xs font-medium text-center z-20 transition-all duration-300 ease-in-out opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-full lg:group-hover:opacity-100 lg:group-hover:translate-y-0 hover:bg-gray-900">
+            Add To Cart
+          </button>
+        </div>
+
+        <h3 class="font-medium text-black text-sm truncate">AK-900 Wired Keyboard</h3>
+        <div class="flex items-center space-x-3 text-sm">
+          <span class="text-[#DB4444] font-medium">$960</span>
+          <span class="text-gray-400 line-through">$1160</span>
+        </div>
+        
+        <div class="flex items-center space-x-2 text-xs">
+          <div class="flex space-x-1 text-amber-500">
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-regular fa-star text-gray-300"></i>
+          </div>
+          <span class="text-gray-400 font-medium">(75)</span>
+        </div>
+      </div>
+
+
+      <!-- Card 3: IPS LCD Gaming Monitor -->
+      <div class="space-y-3">
+        <div class="group relative bg-[#F5F5F5] rounded h-64 flex flex-col justify-between overflow-hidden">
+          
+          <div class="p-3 flex justify-between items-start z-10">
+            <span class="bg-[#DB4444] text-white text-xs px-3 py-1 rounded font-medium">
+              -30%
+            </span>
+            <div class="flex flex-col space-y-2">
+              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
+                <i class="fa-regular fa-heart text-xs"></i>
+              </button>
+              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
+                <i class="fa-regular fa-eye text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="absolute inset-0 flex items-center justify-center p-6">
+            <img src="{% static 'images/gaming-monitor.png' %}" alt="IPS LCD Gaming Monitor" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
+          </div>
+
+          <!-- Add To Cart -->
+          <button type="button" class="absolute bottom-0 inset-x-0 w-full bg-black text-white py-2.5 text-xs font-medium text-center z-20 transition-all duration-300 ease-in-out opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-full lg:group-hover:opacity-100 lg:group-hover:translate-y-0 hover:bg-gray-900">
+            Add To Cart
+          </button>
+        </div>
+
+        <h3 class="font-medium text-black text-sm truncate">IPS LCD Gaming Monitor</h3>
+        <div class="flex items-center space-x-3 text-sm">
+          <span class="text-[#DB4444] font-medium">$370</span>
+          <span class="text-gray-400 line-through">$400</span>
+        </div>
+        
+        <div class="flex items-center space-x-2 text-xs">
+          <div class="flex space-x-1 text-amber-500">
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <span class="text-gray-400 font-medium">(99)</span>
+        </div>
+      </div>
+
+
+      <!-- Card 4: RGB liquid CPU Cooler -->
+      <div class="space-y-3">
+        <div class="group relative bg-[#F5F5F5] rounded h-64 flex flex-col justify-between overflow-hidden">
+          
+          <div class="p-3 flex justify-end items-start z-10">
+            <div class="flex flex-col space-y-2">
+              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
+                <i class="fa-regular fa-heart text-xs"></i>
+              </button>
+              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
+                <i class="fa-regular fa-eye text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="absolute inset-0 flex items-center justify-center p-6">
+            <img src="{% static 'images/cpu-cooler.png' %}" alt="RGB liquid CPU Cooler" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
+          </div>
+
+          <!-- Add To Cart -->
+          <button type="button" class="absolute bottom-0 inset-x-0 w-full bg-black text-white py-2.5 text-xs font-medium text-center z-20 transition-all duration-300 ease-in-out opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-full lg:group-hover:opacity-100 lg:group-hover:translate-y-0 hover:bg-gray-900">
+            Add To Cart
+          </button>
+        </div>
+
+        <h3 class="font-medium text-black text-sm truncate">RGB liquid CPU Cooler</h3>
+        <div class="flex items-center space-x-3 text-sm">
+          <span class="text-[#DB4444] font-medium">$160</span>
+          <span class="text-gray-400 line-through">$170</span>
+        </div>
+        
+        <div class="flex items-center space-x-2 text-xs">
+          <div class="flex space-x-1 text-amber-500">
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-regular fa-star text-gray-300"></i>
+          </div>
+          <span class="text-gray-400 font-medium">(65)</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+{% endblock content %}

@@ -8,10 +8,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-73rpzjn%_#ss^$+e8oz$+6rp&96e(j2@px@ya3%%v-_bie+z1('
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Turn off DEBUG mode for production deployment
+DEBUG = False
 
-ALLOWED_HOSTS = []
+# Allow traffic from your DigitalOcean droplet IP and local loops
+ALLOWED_HOSTS = ['206.189.22.172']
 
 
 # Application definition
@@ -23,10 +24,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Custom Apps
-    'mainsite', 'account',
-      # Added for social authentication``
+    'mainsite',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -51,9 +52,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.media',  
+                'django.template.context_processors.media',
                 'mainsite.context_processors.global_counts',
-                # Added for template media access
             ],
         },
     },
@@ -103,8 +103,8 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'  # Fixed: Added leading slash
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files (User Uploads)
@@ -113,7 +113,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Email Configuration
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Fixed: Correct Django email setting
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 try:
     from .local_settings import *

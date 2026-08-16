@@ -1,0 +1,32 @@
+# Virtual Environment (shown as 'env' in your explorer)
+env/
+venv/
+ENV/
+
+# Node Dependencies (shown as 'node_modules' in your explorer)
+node_modules/
+
+# Local SQLite Database (shown as 'db.sqlite3' in your explorer)
+*.sqlite3
+db.sqlite3
+
+# User Uploaded Media (shown as 'media' in your explorer)
+media/
+
+# Environment / Secret Files
+.env
+.env.*
+
+# Python Cache Files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Collected Static Files (when running collectstatic)
+staticfiles/
+
+# IDE & OS Specific Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

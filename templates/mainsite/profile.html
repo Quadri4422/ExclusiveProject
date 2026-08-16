@@ -2,25 +2,35 @@
 {% load static %}
 
 {% block title %}
-    account - Exclusive101
+    Account - Exclusive101
 {% endblock title %}
-
 
 {% block content %} 
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-10">
   
+  <!-- Django Messages Alert -->
+  {% if messages %}
+    <div class="space-y-2">
+      {% for message in messages %}
+        <div class="p-4 text-xs rounded border {% if message.tags == 'error' %}bg-red-50 text-red-700 border-red-200{% else %}bg-green-50 text-green-700 border-green-200{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
   <!-- Top Bar: Breadcrumb Navigation & Welcome Greeting -->
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs sm:text-sm">
     <!-- Breadcrumb Navigation -->
     <nav class="text-gray-400 flex items-center space-x-2">
-      <a href="#" class="hover:text-black transition-colors">Home</a>
+      <a href="{% url 'mainsite:index' %}" class="hover:text-black transition-colors">Home</a>
       <span>/</span>
       <span class="text-black font-medium">My Account</span>
     </nav>
 
     <!-- Welcome Greeting -->
     <div class="text-black font-normal">
-      Welcome! <span class="text-[#DB4444] font-medium">Md Rimel</span>
+      Welcome! <span class="text-[#DB4444] font-medium">{{ user.first_name|default:user.username }} {{ user.last_name }}</span>
     </div>
   </div>
 
@@ -35,13 +45,13 @@
         <h3 class="font-medium text-black text-sm sm:text-base">Manage My Account</h3>
         <ul class="pl-6 space-y-2 text-xs sm:text-sm">
           <li>
-            <a href="#" class="text-[#DB4444] font-medium">My Profile</a>
+            <a href="{% url 'mainsite:profile' %}" class="text-[#DB4444] font-medium">My Profile</a>
           </li>
           <li>
-            <a href="#" class="text-gray-500 hover:text-black transition-colors">Address Book</a>
+            <a href="{% url 'mainsite:address_book' %}" class="text-gray-500 hover:text-black transition-colors">Address Book</a>
           </li>
           <li>
-            <a href="#" class="text-gray-500 hover:text-black transition-colors">My Payment Options</a>
+            <a href="{% url 'mainsite:payment_options' %}" class="text-gray-500 hover:text-black transition-colors">My Payment Options</a>
           </li>
         </ul>
       </div>
@@ -51,17 +61,17 @@
         <h3 class="font-medium text-black text-sm sm:text-base">My Orders</h3>
         <ul class="pl-6 space-y-2 text-xs sm:text-sm">
           <li>
-            <a href="#" class="text-gray-500 hover:text-black transition-colors">My Returns</a>
+            <a href="{% url 'mainsite:returns' %}" class="text-gray-500 hover:text-black transition-colors">My Returns</a>
           </li>
           <li>
-            <a href="#" class="text-gray-500 hover:text-black transition-colors">My Cancellations</a>
+            <a href="{% url 'mainsite:cancellations' %}" class="text-gray-500 hover:text-black transition-colors">My Cancellations</a>
           </li>
         </ul>
       </div>
 
       <!-- My WishList Group -->
       <div>
-        <a href="#" class="font-medium text-black text-sm sm:text-base hover:text-[#DB4444] transition-colors">
+        <a href="{% url 'mainsite:wishlist' %}" class="font-medium text-black text-sm sm:text-base hover:text-[#DB4444] transition-colors">
           My WishList
         </a>
       </div>
@@ -70,7 +80,7 @@
 
     <!-- Edit Profile Form Card (Right Column) -->
     <div class="lg:col-span-9 bg-white rounded shadow-sm p-6 sm:p-10 border border-gray-100">
-      <form action="#" method="POST" class="space-y-6">
+      <form action="{% url 'mainsite:profile' %}" method="POST" class="space-y-6">
         {% csrf_token %}
 
         <h2 class="text-lg font-medium text-[#DB4444]">
@@ -84,7 +94,8 @@
             <input 
               type="text" 
               name="first_name" 
-              value="Md" 
+              value="{{ user.first_name }}" 
+              required
               class="w-full bg-[#F5F5F5] rounded px-4 py-3 text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#DB4444]"
             >
           </div>
@@ -94,7 +105,8 @@
             <input 
               type="text" 
               name="last_name" 
-              value="Rimel" 
+              value="{{ user.last_name }}" 
+              required
               class="w-full bg-[#F5F5F5] rounded px-4 py-3 text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#DB4444]"
             >
           </div>
@@ -107,7 +119,8 @@
             <input 
               type="email" 
               name="email" 
-              value="rimel1111@gmail.com" 
+              value="{{ user.email }}" 
+              required
               class="w-full bg-[#F5F5F5] rounded px-4 py-3 text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#DB4444]"
             >
           </div>
@@ -117,7 +130,8 @@
             <input 
               type="text" 
               name="address" 
-              value="Kingston, 5236, United State" 
+              value="{{ profile.address|default:'' }}" 
+              placeholder="Enter your address"
               class="w-full bg-[#F5F5F5] rounded px-4 py-3 text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#DB4444]"
             >
           </div>
@@ -130,33 +144,33 @@
           <input 
             type="password" 
             name="current_password" 
-            placeholder="Current Passwod" 
+            placeholder="Current Password" 
             class="w-full bg-[#F5F5F5] rounded px-4 py-3 text-xs text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#DB4444]"
           >
 
           <input 
             type="password" 
             name="new_password" 
-            placeholder="New Passwod" 
+            placeholder="New Password" 
             class="w-full bg-[#F5F5F5] rounded px-4 py-3 text-xs text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#DB4444]"
           >
 
           <input 
             type="password" 
             name="confirm_password" 
-            placeholder="Confirm New Passwod" 
+            placeholder="Confirm New Password" 
             class="w-full bg-[#F5F5F5] rounded px-4 py-3 text-xs text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#DB4444]"
           >
         </div>
 
         <!-- Form Action Buttons -->
         <div class="flex items-center justify-end space-x-6 pt-4">
-          <button 
-            type="button" 
+          <a 
+            href="{% url 'mainsite:index' %}" 
             class="text-xs font-normal text-black hover:text-[#DB4444] transition-colors"
           >
             Cancel
-          </button>
+          </a>
           <button 
             type="submit" 
             class="px-10 py-3 bg-[#DB4444] text-white rounded text-xs font-medium hover:bg-red-600 transition-colors duration-200"

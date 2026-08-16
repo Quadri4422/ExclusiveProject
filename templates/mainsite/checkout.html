@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    checkout - Exclusive101
+    Checkout - Exclusive101
 {% endblock title %}
 
 {% block content %}
@@ -11,13 +11,11 @@
   
   <!-- Breadcrumb Navigation -->
   <nav class="text-xs sm:text-sm text-gray-400 flex flex-wrap items-center gap-2">
-    <a href="#" class="hover:text-black transition-colors">Account</a>
+    <a href="{% url 'mainsite:profile' %}" class="hover:text-black transition-colors">Account</a>
     <span>/</span>
-    <a href="#" class="hover:text-black transition-colors">My Account</a>
+    <a href="{% url 'mainsite:profile' %}" class="hover:text-black transition-colors">My Account</a>
     <span>/</span>
-    <a href="#" class="hover:text-black transition-colors">Product</a>
-    <span>/</span>
-    <a href="#" class="hover:text-black transition-colors">View Cart</a>
+    <a href="{% url 'mainsite:cart' %}" class="hover:text-black transition-colors">View Cart</a>
     <span>/</span>
     <span class="text-black font-medium">CheckOut</span>
   </nav>
@@ -28,12 +26,25 @@
   </h1>
 
   <!-- Checkout Grid Container -->
-  <form action="#" method="POST" class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+  <form action="{% url 'mainsite:checkout' %}" method="POST" class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
     {% csrf_token %}
 
     <!-- LEFT COLUMN: Billing Details Form -->
     <div class="lg:col-span-6 space-y-6">
       
+      {% if form.errors %}
+        <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
+          <p class="font-bold">Please correct the following errors:</p>
+          <ul class="list-disc pl-5 mt-1">
+            {% for field, errors in form.errors.items %}
+              {% for error in errors %}
+                <li>{{ field|capfirst }}: {{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
       <!-- First Name -->
       <div class="space-y-2">
         <label for="first_name" class="block text-sm text-gray-400">
@@ -43,6 +54,7 @@
           type="text" 
           id="first_name" 
           name="first_name" 
+          value="{{ form.first_name.value|default:'' }}"
           required 
           class="w-full bg-[#F5F5F5] rounded border-none px-4 py-3.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#DB4444]"
         >
@@ -57,6 +69,7 @@
           type="text" 
           id="company_name" 
           name="company_name" 
+          value="{{ form.company_name.value|default:'' }}"
           class="w-full bg-[#F5F5F5] rounded border-none px-4 py-3.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#DB4444]"
         >
       </div>
@@ -70,6 +83,7 @@
           type="text" 
           id="street_address" 
           name="street_address" 
+          value="{{ form.street_address.value|default:'' }}"
           required 
           class="w-full bg-[#F5F5F5] rounded border-none px-4 py-3.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#DB4444]"
         >
@@ -84,6 +98,7 @@
           type="text" 
           id="apartment" 
           name="apartment" 
+          value="{{ form.apartment.value|default:'' }}"
           class="w-full bg-[#F5F5F5] rounded border-none px-4 py-3.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#DB4444]"
         >
       </div>
@@ -97,6 +112,7 @@
           type="text" 
           id="city" 
           name="city" 
+          value="{{ form.city.value|default:'' }}"
           required 
           class="w-full bg-[#F5F5F5] rounded border-none px-4 py-3.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#DB4444]"
         >
@@ -111,6 +127,7 @@
           type="tel" 
           id="phone" 
           name="phone" 
+          value="{{ form.phone.value|default:'' }}"
           required 
           class="w-full bg-[#F5F5F5] rounded border-none px-4 py-3.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#DB4444]"
         >
@@ -125,6 +142,7 @@
           type="email" 
           id="email" 
           name="email" 
+          value="{{ form.email.value|default:'' }}"
           required 
           class="w-full bg-[#F5F5F5] rounded border-none px-4 py-3.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-[#DB4444]"
         >
@@ -136,7 +154,7 @@
           type="checkbox" 
           id="save_info" 
           name="save_info" 
-          checked 
+          {% if form.save_info.value or form.save_info.value is None %}checked{% endif %}
           class="w-5 h-5 accent-[#DB4444] rounded cursor-pointer"
         >
         <label for="save_info" class="text-sm text-black cursor-pointer select-none">
@@ -150,27 +168,28 @@
     <!-- RIGHT COLUMN: Order Summary & Payment -->
     <div class="lg:col-span-6 space-y-8 lg:pt-4">
       
-      <!-- Cart Items List -->
-      <div class="space-y-6">
-        
-        <!-- Item 1: LCD Monitor -->
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-4">
-            <img src="{% static 'images/gaming-monitor.png' %}" alt="LCD Monitor" class="w-12 h-12 object-contain">
-            <span class="text-sm text-black font-medium">LCD Monitor</span>
+      <!-- Cart Items Dynamic Loop -->
+      <div class="space-y-6 max-h-80 overflow-y-auto pr-2">
+        {% for item in cart_items %}
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              {% if item.product.images.first %}
+                <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}" class="w-12 h-12 object-contain">
+              {% elif item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-12 h-12 object-contain">
+              {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="{{ item.product.name }}" class="w-12 h-12 object-contain">
+              {% endif %}
+              <div class="flex flex-col">
+                <span class="text-sm text-black font-medium">{{ item.product.name }}</span>
+                <span class="text-xs text-gray-500">Qty: {{ item.quantity }}</span>
+              </div>
+            </div>
+            <span class="text-sm text-black font-medium">${{ item.subtotal }}</span>
           </div>
-          <span class="text-sm text-black font-medium">$650</span>
-        </div>
-
-        <!-- Item 2: H1 Gamepad -->
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-4">
-            <img src="{% static 'images/gamepad-red.png' %}" alt="H1 Gamepad" class="w-12 h-12 object-contain">
-            <span class="text-sm text-black font-medium">H1 Gamepad</span>
-          </div>
-          <span class="text-sm text-black font-medium">$1100</span>
-        </div>
-
+        {% empty %}
+          <p class="text-sm text-gray-500">Your cart is empty.</p>
+        {% endfor %}
       </div>
 
       <!-- Pricing Summary Breakdown -->
@@ -179,19 +198,33 @@
         <!-- Subtotal -->
         <div class="flex justify-between items-center pb-3 border-b border-gray-300">
           <span class="text-black">Subtotal:</span>
-          <span class="font-medium text-black">$1750</span>
+          <span class="font-medium text-black">${{ subtotal }}</span>
         </div>
 
         <!-- Shipping -->
         <div class="flex justify-between items-center pb-3 border-b border-gray-300">
           <span class="text-black">Shipping:</span>
-          <span class="font-medium text-black">Free</span>
+          <span class="font-medium text-black">
+            {% if shipping > 0 %}
+              ${{ shipping }}
+            {% else %}
+              Free
+            {% endif %}
+          </span>
         </div>
+
+        {% if discount > 0 %}
+          <!-- Discount -->
+          <div class="flex justify-between items-center pb-3 border-b border-gray-300 text-green-600">
+            <span>Discount:</span>
+            <span class="font-medium">-${{ discount }}</span>
+          </div>
+        {% endif %}
 
         <!-- Total -->
         <div class="flex justify-between items-center">
           <span class="text-black">Total:</span>
-          <span class="font-medium text-black">$1750</span>
+          <span class="font-medium text-black">${{ total_price }}</span>
         </div>
 
       </div>
@@ -208,10 +241,10 @@
           
           <!-- Payment Logos / Icons -->
           <div class="flex items-center space-x-2">
-            <span class="text-xs px-1.5 py-0.5 border border-gray-300 rounded font-bold text-blue-800">BKash</span>
-            <span class="text-xs px-1.5 py-0.5 border border-gray-300 rounded font-bold text-pink-600">VISA</span>
-            <span class="text-xs px-1.5 py-0.5 border border-gray-300 rounded font-bold text-red-500">MasterCard</span>
-            <span class="text-xs px-1.5 py-0.5 border border-gray-300 rounded font-bold text-orange-500">Nagad</span>
+            <img src="{% static 'image/Bkash.png' %}" alt="Bkash" class="w-8 h-8 object-contain">
+            <img src="{% static 'image/Visa.png' %}" alt="Visa" class="w-8 h-8 object-contain">
+            <img src="{% static 'image/image 31.png' %}" alt="MasterCard" class="w-8 h-8 object-contain">
+            <img src="{% static 'image/Nagad.png' %}" alt="Nagad" class="w-8 h-8 object-contain">
           </div>
         </div>
 
@@ -229,11 +262,13 @@
       <div class="flex flex-col sm:flex-row items-center gap-4 pt-2">
         <input 
           type="text" 
+          name="coupon_code"
           placeholder="Coupon Code" 
           class="w-full sm:flex-1 px-6 py-3.5 border border-black rounded text-sm placeholder-gray-500 focus:outline-none"
         >
         <button 
-          type="button" 
+          type="submit" 
+          formaction="{% url 'mainsite:apply_coupon' %}"
           class="w-full sm:w-auto px-8 py-3.5 bg-[#DB4444] text-white rounded text-sm font-medium hover:bg-red-600 transition-colors duration-200"
         >
           Apply Coupon

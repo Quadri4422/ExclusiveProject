@@ -1,0 +1,55 @@
+{% extends '../shared/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <nav class="text-xs text-gray-500 mb-4">
+            <a href="{% url 'mainsite:index' %}" class="hover:underline">Home</a> / <span class="text-black">Privacy Policy</span>
+        </nav>
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-wider text-black">Privacy Policy</h1>
+        <p class="text-xs text-gray-500 mt-2">Last updated: August 2026</p>
+    </div>
+
+    <div class="space-y-8 text-gray-700 text-sm sm:text-base leading-relaxed">
+        <section class="space-y-3">
+            <h2 class="text-xl font-semibold text-black">1. Information We Collect</h2>
+            <p>
+                At Exclusive, we collect information to provide better services to all our users. When you register on our site, place an order, subscribe to our newsletter, or fill out a form, we may collect your name, email address, mailing address, phone number, and payment information.
+            </p>
+        </section>
+
+        <section class="space-y-3">
+            <h2 class="text-xl font-semibold text-black">2. How We Use Your Information</h2>
+            <p>Any of the information we collect from you may be used in one of the following ways:</p>
+            <ul class="list-disc pl-5 space-y-2">
+                <li>To personalize your experience and respond better to your individual needs.</li>
+                <li>To improve our website and customer service offerings based on your feedback.</li>
+                <li>To process transactions quickly and efficiently.</li>
+                <li>To send periodic emails regarding your order updates, promotional offers, or company news.</li>
+            </ul>
+        </section>
+
+        <section class="space-y-3">
+            <h2 class="text-xl font-semibold text-black">3. Protection of Information</h2>
+            <p>
+                We implement a variety of security measures to maintain the safety of your personal information when you place an order or enter, submit, or access your personal data. All supplied sensitive information is transmitted via Secure Socket Layer (SSL) technology.
+            </p>
+        </section>
+
+        <section class="space-y-3">
+            <h2 class="text-xl font-semibold text-black">4. Cookies</h2>
+            <p>
+                We use cookies to help us remember and process the items in your shopping cart, understand and save your preferences for future visits, and compile aggregate data about site traffic and site interaction so that we can offer better site experiences in the future.
+            </p>
+        </section>
+
+        <section class="space-y-3">
+            <h2 class="text-xl font-semibold text-black">5. Contacting Us</h2>
+            <p>
+                If there are any questions regarding this privacy policy, you may reach out to us through our <a href="{% url 'mainsite:contact' %}" class="text-[#DB4444] underline font-medium">Contact page</a> or email us directly at support@exclusive.com.
+            </p>
+        </section>
+    </div>
+</div>
+{% endblock %}

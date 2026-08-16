@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # Custom Apps
-    'mainsite', 'account'
+    'mainsite', 'account',
+      # Added for social authentication``
 ]
 
 MIDDLEWARE = [
@@ -50,7 +51,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.media',  # Added for template media access
+                'django.template.context_processors.media',  
+                'mainsite.context_processors.global_counts',
+                # Added for template media access
             ],
         },
     },

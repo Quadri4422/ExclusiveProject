@@ -1,0 +1,212 @@
+{% load static %}
+
+<header class="w-full border-b border-gray-200 bg-white sticky top-0 z-40">
+  <!-- Top Announcement Bar -->
+  <div class="bg-black text-white text-xs sm:text-sm py-2.5 px-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between relative">
+      <div class="flex-1 text-center pr-4 sm:pr-0">
+        <span>Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!</span>
+        <a href="{% url 'mainsite:categories' %}" class="font-semibold underline ml-2 hover:text-gray-300">ShopNow</a>
+      </div>
+      <div class="hidden sm:flex items-center space-x-1 cursor-pointer hover:text-gray-300">
+        <span>English</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Bar -->
+  <nav class="bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      
+      <!-- Logo -->
+      <a href="{% url 'mainsite:index' %}" class="text-2xl font-bold tracking-wider text-black">Exclusive</a>
+
+      <!-- Desktop Navigation Links -->
+      <ul class="hidden md:flex items-center space-x-8 font-medium text-black">
+        <li><a href="{% url 'mainsite:index' %}" class="hover:text-gray-500 transition-colors">Home</a></li>
+        <li><a href="{% url 'mainsite:contact' %}" class="hover:text-gray-500 transition-colors">Contact</a></li>
+        <li><a href="{% url 'mainsite:about' %}" class="hover:text-gray-500 transition-colors">About</a></li>
+        {% if user.is_authenticated %}
+          <!-- <li><a href="{% url 'mainsite:profile' %}" class="hover:text-gray-500 transition-colors">Account</a></li> -->
+        {% else %}
+          <li><a href="{% url 'account:signup' %}" class="hover:text-gray-500 transition-colors">Sign Up</a></li>
+        {% endif %}
+      </ul>
+
+      <!-- Right Side Controls -->
+      <div class="flex items-center space-x-3 sm:space-x-4">
+        
+        <!-- Search Bar (Desktop) -->
+        <form action="{% url 'mainsite:index' %}" method="GET" class="relative hidden sm:block">
+          <input 
+            type="text" 
+            name="q"
+            value="{{ request.GET.q|default:'' }}"
+            placeholder="What are you looking for?" 
+            class="bg-gray-100 text-xs text-gray-800 rounded px-4 py-2.5 pr-10 focus:outline-none focus:ring-1 focus:ring-black w-48 lg:w-64"
+          />
+          <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-700 hover:text-black">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </form>
+
+        <!-- Wishlist Icon with Dynamic Counter -->
+        <a href="{% url 'mainsite:wishlist' %}" class="text-black hover:text-gray-600 p-1 relative" aria-label="Wishlist">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <span id="wishlist-count" class="absolute -top-1 -right-1 bg-[#DB4444] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+            {{ global_wishlist_count|default:0 }}
+          </span>
+        </a>
+
+        <!-- Cart Icon with Dynamic Counter -->
+        <a href="{% url 'mainsite:cart' %}" class="text-black hover:text-gray-600 p-1 relative" aria-label="Cart">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+          </svg>
+          <span id="cart-count" class="absolute -top-1 -right-1 bg-[#DB4444] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+            {{ global_cart_count|default:0 }}
+          </span>
+        </a>
+
+        <!-- Account Icon & Dropdown Container -->
+        <div class="relative">
+          {% if user.is_authenticated %}
+            <!-- Logged In Button Trigger -->
+            <button 
+              id="account-dropdown-btn" 
+              class="text-black hover:text-[#DB4444] p-1 focus:outline-none transition-colors"
+              aria-label="Account Menu"
+            >
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div 
+              id="account-dropdown-menu" 
+              class="hidden absolute right-0 mt-3 w-56 bg-white text-gray-800 rounded-md shadow-xl py-2 text-xs sm:text-sm z-50 border border-gray-100"
+            >
+              <a href="{% url 'mainsite:profile' %}" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-gray-50 hover:text-black transition-colors">
+                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span>Manage My Account</span>
+              </a>
+
+              <a href="{% url 'mainsite:profile' %}" class="flex items-center space-x-3 px-4 py-2.5 hover:bg-gray-50 hover:text-black transition-colors">
+                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                <span>My Order</span>
+              </a>
+
+              <!-- Logout Action -->
+              <form action="{% url 'account:logout' %}" method="POST" class="w-full">
+                {% csrf_token %}
+                <button type="submit" class="w-full text-left flex items-center space-x-3 px-4 py-2.5 hover:bg-red-50 text-red-600 transition-colors">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Logout</span>
+                </button>
+              </form>
+            </div>
+          {% else %}
+            <!-- Logged Out Link to Login Page -->
+            <a href="{% url 'account:login' %}" class="text-black hover:text-gray-600 p-1 block" aria-label="Login">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+
+        <!-- Mobile Hamburger / Close Button -->
+        <button id="menu-btn" class="md:hidden text-black focus:outline-none p-1" aria-label="Toggle menu">
+          <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 pt-4 pb-6 space-y-4">
+      <a href="{% url 'mainsite:index' %}" class="block font-semibold border-l-4 border-black pl-3 text-black">Home</a>
+      <a href="{% url 'mainsite:contact' %}" class="block text-gray-700 hover:text-black pl-4 transition-colors">Contact</a>
+      <a href="{% url 'mainsite:about' %}" class="block text-gray-700 hover:text-black pl-4 transition-colors">About</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'mainsite:profile' %}" class="block text-gray-700 hover:text-black pl-4 transition-colors">My Account</a>
+      {% else %}
+        <a href="{% url 'account:signup' %}" class="block text-gray-700 hover:text-black pl-4 transition-colors">Sign Up</a>
+        <a href="{% url 'account:login' %}" class="block text-gray-700 hover:text-black pl-4 transition-colors">Log In</a>
+      {% endif %}
+    </div>
+  </nav>
+</header>
+
+<!-- JavaScript Interactivity & Badge Sync -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Mobile Navigation Toggle
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const openIcon = document.getElementById('menu-icon-open');
+    const closeIcon = document.getElementById('menu-icon-close');
+
+    if (menuBtn && mobileMenu) {
+      menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        if (openIcon) openIcon.classList.toggle('hidden');
+        if (closeIcon) closeIcon.classList.toggle('hidden');
+      });
+    }
+
+    // 2. Account Dropdown Toggle
+    const accountBtn = document.getElementById('account-dropdown-btn');
+    const accountDropdown = document.getElementById('account-dropdown-menu');
+
+    if (accountBtn && accountDropdown) {
+      accountBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        accountDropdown.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!accountBtn.contains(e.target) && !accountDropdown.contains(e.target)) {
+          accountDropdown.classList.add('hidden');
+        }
+      });
+    }
+  });
+
+  // Global helper functions for your AJAX updates
+  window.updateCartBadge = function(newCount) {
+    const cartBadge = document.getElementById('cart-count');
+    if (cartBadge) {
+      cartBadge.innerText = newCount;
+      cartBadge.style.display = newCount > 0 ? 'flex' : 'none';
+    }
+  };
+
+  window.updateWishlistBadge = function(newCount) {
+    const wishlistBadge = document.getElementById('wishlist-count');
+    if (wishlistBadge) {
+      wishlistBadge.innerText = newCount;
+      wishlistBadge.style.display = newCount > 0 ? 'flex' : 'none';
+    }
+  };
+</script>

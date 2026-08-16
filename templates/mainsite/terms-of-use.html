@@ -1,0 +1,51 @@
+{% extends '../shared/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <nav class="text-xs text-gray-500 mb-4">
+            <a href="{% url 'mainsite:index' %}" class="hover:underline">Home</a> / <span class="text-black">Terms Of Use</span>
+        </nav>
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-wider text-black">Terms Of Use</h1>
+        <p class="text-xs text-gray-500 mt-2">Last updated: August 2026</p>
+    </div>
+
+    <div class="space-y-8 text-gray-700 text-sm sm:text-base leading-relaxed">
+        <section class="space-y-3">
+            <h2 class="text-xl font-semibold text-black">1. Overview</h2>
+            <p>
+                This website is operated by Exclusive. Throughout the site, the terms "we", "us" and "our" refer to Exclusive. By visiting our site and/ or purchasing something from us, you engage in our "Service" and agree to be bound by the following terms and conditions.
+            </p>
+        </section>
+
+        <section class="space-y-3">
+            <h2 class="text-xl font-semibold text-black">2. Online Store Terms</h2>
+            <p>
+                By agreeing to these Terms of Use, you represent that you are at least the age of majority in your state or province of residence. You may not use our products for any illegal or unauthorized purpose nor may you violate any laws in your jurisdiction.
+            </p>
+        </section>
+
+        <section class="space-y-3">
+            <h2 class="text-xl font-semibold text-black">3. Products and Pricing</h2>
+            <p>
+                Prices for our products are subject to change without notice. We reserve the right at any time to modify or discontinue the Service (or any part or content thereof) without notice at any time. We shall not be liable to you or to any third-party for any modification, price change, suspension, or discontinuance of the Service.
+            </p>
+        </section>
+
+        <section class="space-y-3">
+            <h2 class="text-xl font-semibold text-black">4. Accuracy of Billing and Account Information</h2>
+            <p>
+                We reserve the right to refuse any order you place with us. We may, in our sole discretion, limit or cancel quantities purchased per person, per household, or per order. In the event that we make a change to or cancel an order, we may attempt to notify you by contacting the e-mail and/or billing address/phone number provided at the time the order was made.
+            </p>
+        </section>
+
+        <section class="space-y-3">
+            <h2 class="text-xl font-semibold text-black">5. Governing Law</h2>
+            <p>
+                These Terms of Use and any separate agreements whereby we provide you Services shall be governed by and construed in accordance with the local laws.
+            </p>
+        </section>
+    </div>
+</div>
+{% endblock %}

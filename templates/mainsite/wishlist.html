@@ -6,137 +6,77 @@
 {% endblock title %}
 
 {% block content %}
-{% load static %}
-
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16 font-sans">
   
   <!-- ================= WISHLIST SECTION ================= -->
   <div class="space-y-8">
     <!-- Wishlist Header -->
     <div class="flex items-center justify-between">
-      <h2 class="text-xl sm:text-2xl font-normal text-black">Wishlist (4)</h2>
-      <a href="#" class="px-6 py-3 border border-gray-400 rounded text-sm font-medium text-black hover:bg-black hover:text-white transition-colors duration-200">
-        Move All To Bag
-      </a>
+      <h2 class="text-xl sm:text-2xl font-normal text-black">
+        Wishlist ({{ wishlist_products|length }})
+      </h2>
+      {% if wishlist_products %}
+        <button type="button" data-url="{% url 'mainsite:move_all_to_bag' %}" class="move-all-btn px-6 py-3 border border-gray-400 rounded text-sm font-medium text-black hover:bg-black hover:text-white transition-colors duration-200 cursor-pointer">
+          Move All To Bag
+        </button>
+      {% endif %}
     </div>
 
     <!-- Wishlist Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      
-      <!-- Card 1: Gucci Duffle Bag -->
-      <div class="group relative flex flex-col">
-        <!-- Image Container -->
-        <div class="relative w-full h-64 bg-[#F5F5F5] rounded flex items-center justify-center p-6 overflow-hidden">
-          <!-- Discount Badge -->
-          <span class="absolute top-3 left-3 bg-[#DB4444] text-white text-xs px-3 py-1 rounded">
-            -35%
-          </span>
-          <!-- Trash Action Icon -->
-          <button type="button" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:bg-red-500 hover:text-white transition-colors shadow-sm" aria-label="Remove item">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
-          </button>
-          <!-- Product Image -->
-          <img src="{% static 'images/gucci-bag.png' %}" alt="Gucci duffle bag" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
-          
-          <!-- Add To Cart Button (Always visible on mobile & lg, hover triggered on md) -->
-          <button type="button" class="absolute bottom-0 left-0 right-0 bg-black text-white text-xs sm:text-sm py-2.5 flex items-center justify-center space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 lg:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <span>Add To Cart</span>
-          </button>
-        </div>
+      {% for product in wishlist_products %}
+        <div class="group relative flex flex-col">
+          <!-- Image Container -->
+          <div class="relative w-full h-64 bg-[#F5F5F5] rounded flex items-center justify-center p-6 overflow-hidden">
+            
+            <!-- Discount Badge -->
+            {% if product.discount_percentage %}
+              <span class="absolute top-3 left-3 bg-[#DB4444] text-white text-xs px-3 py-1 rounded">
+                -{{ product.discount_percentage }}%
+              </span>
+            {% endif %}
 
-        <!-- Product Details -->
-        <div class="mt-4 space-y-1">
-          <h3 class="font-medium text-black text-base truncate">Gucci duffle bag</h3>
-          <div class="flex items-center space-x-3 text-base">
-            <span class="text-[#DB4444] font-semibold">$960</span>
-            <span class="text-gray-400 line-through text-sm">$1160</span>
+            <!-- Delete / Remove Action Icon -->
+            <button type="button" data-url="{% url 'mainsite:remove_from_wishlist' product.id %}" class="remove-wishlist-btn absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:bg-red-500 hover:text-white transition-colors shadow-sm cursor-pointer" aria-label="Remove item">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+            </button>
+
+            <!-- Product Image -->
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
+            {% else %}
+              <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}" class="max-h-36 object-contain">
+            {% endif %}
+            
+            <!-- Add To Cart Button -->
+            <div class="absolute bottom-0 left-0 right-0">
+              <button type="button" data-product-id="{{ product.id }}" data-url="{% url 'mainsite:add_to_cart' product.id %}" class="add-to-cart-btn w-full bg-black text-white text-xs sm:text-sm py-2.5 flex items-center justify-center space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 lg:opacity-100 transition-opacity duration-300 cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span>Add To Cart</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product Details -->
+          <div class="mt-4 space-y-1">
+            <h3 class="font-medium text-black text-base truncate">{{ product.name }}</h3>
+            <div class="flex items-center space-x-3 text-base">
+              <span class="text-[#DB4444] font-semibold">${{ product.price }}</span>
+              {% if product.old_price %}
+                <span class="text-gray-400 line-through text-sm">${{ product.old_price }}</span>
+              {% endif %}
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- Card 2: RGB liquid CPU Cooler -->
-      <div class="group relative flex flex-col">
-        <div class="relative w-full h-64 bg-[#F5F5F5] rounded flex items-center justify-center p-6 overflow-hidden">
-          <button type="button" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:bg-red-500 hover:text-white transition-colors shadow-sm" aria-label="Remove item">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
-          </button>
-          <img src="{% static 'images/cpu-cooler.png' %}" alt="RGB liquid CPU Cooler" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
-          
-          <button type="button" class="absolute bottom-0 left-0 right-0 bg-black text-white text-xs sm:text-sm py-2.5 flex items-center justify-center space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 lg:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <span>Add To Cart</span>
-          </button>
+      {% empty %}
+        <div class="col-span-full py-12 text-center text-gray-500">
+          Your wishlist is currently empty.
         </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-medium text-black text-base truncate">RGB liquid CPU Cooler</h3>
-          <div class="flex items-center space-x-3 text-base">
-            <span class="text-[#DB4444] font-semibold">$1960</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 3: GP11 Shooter USB Gamepad -->
-      <div class="group relative flex flex-col">
-        <div class="relative w-full h-64 bg-[#F5F5F5] rounded flex items-center justify-center p-6 overflow-hidden">
-          <button type="button" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:bg-red-500 hover:text-white transition-colors shadow-sm" aria-label="Remove item">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
-          </button>
-          <img src="{% static 'images/gamepad-black.png' %}" alt="GP11 Shooter USB Gamepad" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
-          
-          <button type="button" class="absolute bottom-0 left-0 right-0 bg-black text-white text-xs sm:text-sm py-2.5 flex items-center justify-center space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 lg:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <span>Add To Cart</span>
-          </button>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-medium text-black text-base truncate">GP11 Shooter USB Gamepad</h3>
-          <div class="flex items-center space-x-3 text-base">
-            <span class="text-[#DB4444] font-semibold">$550</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 4: Quilted Satin Jacket -->
-      <div class="group relative flex flex-col">
-        <div class="relative w-full h-64 bg-[#F5F5F5] rounded flex items-center justify-center p-6 overflow-hidden">
-          <button type="button" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:bg-red-500 hover:text-white transition-colors shadow-sm" aria-label="Remove item">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
-          </button>
-          <img src="{% static 'images/satin-jacket.png' %}" alt="Quilted Satin Jacket" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
-          
-          <button type="button" class="absolute bottom-0 left-0 right-0 bg-black text-white text-xs sm:text-sm py-2.5 flex items-center justify-center space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 lg:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <span>Add To Cart</span>
-          </button>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-medium text-black text-base truncate">Quilted Satin Jacket</h3>
-          <div class="flex items-center space-x-3 text-base">
-            <span class="text-[#DB4444] font-semibold">$750</span>
-          </div>
-        </div>
-      </div>
-
+      {% endfor %}
     </div>
   </div>
 
@@ -149,188 +89,187 @@
         <span class="w-5 h-10 bg-[#DB4444] rounded-sm"></span>
         <h2 class="text-xl sm:text-2xl font-semibold text-black">Just For You</h2>
       </div>
-      <a href="#" class="px-8 py-3 border border-gray-400 rounded text-sm font-medium text-black hover:bg-black hover:text-white transition-colors duration-200">
+      <a href="{% url 'mainsite:categories' %}" class="px-8 py-3 border border-gray-400 rounded text-sm font-medium text-black hover:bg-black hover:text-white transition-colors duration-200">
         See All
       </a>
     </div>
 
     <!-- Just For You Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      
-      <!-- Item 1: ASUS FHD Gaming Laptop -->
-      <div class="group relative flex flex-col">
-        <div class="relative w-full h-64 bg-[#F5F5F5] rounded flex items-center justify-center p-6 overflow-hidden">
-          <span class="absolute top-3 left-3 bg-[#DB4444] text-white text-xs px-3 py-1 rounded">
-            -35%
-          </span>
-          <button type="button" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:bg-gray-200 transition-colors shadow-sm" aria-label="Quick View">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-            </svg>
-          </button>
-          <img src="{% static 'images/asus-laptop.png' %}" alt="ASUS FHD Gaming Laptop" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
-          
-          <button type="button" class="absolute bottom-0 left-0 right-0 bg-black text-white text-xs sm:text-sm py-2.5 flex items-center justify-center space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 lg:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <span>Add To Cart</span>
-          </button>
-        </div>
+      {% for product in just_for_you_products %}
+        <div class="group relative flex flex-col">
+          <div class="relative w-full h-64 bg-[#F5F5F5] rounded flex items-center justify-center p-6 overflow-hidden">
+            
+            <!-- Badges (New / Discount) -->
+            {% if product.is_new %}
+              <span class="absolute top-3 left-3 bg-[#00FF66] text-black text-xs px-3 py-1 font-semibold rounded">
+                NEW
+              </span>
+            {% elif product.discount_percentage %}
+              <span class="absolute top-3 left-3 bg-[#DB4444] text-white text-xs px-3 py-1 rounded">
+                -{{ product.discount_percentage }}%
+              </span>
+            {% endif %}
 
-        <div class="mt-4 space-y-1">
-          <h3 class="font-medium text-black text-base truncate">ASUS FHD Gaming Laptop</h3>
-          <div class="flex items-center space-x-3 text-base">
-            <span class="text-[#DB4444] font-semibold">$960</span>
-            <span class="text-gray-400 line-through text-sm">$1160</span>
-          </div>
-          <!-- Dynamic Star Rating -->
-          <div class="flex items-center space-x-2 pt-1">
-            <div class="flex text-amber-400 space-x-0.5">
-              {% with rating=5 %}
-                {% for i in "12345" %}
-                  {% if forloop.counter <= rating %}
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                  {% else %}
-                    <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                  {% endif %}
-                {% endfor %}
-              {% endwith %}
+            <!-- Quick View Button -->
+            <a href="{% url 'mainsite:product_detail' product.slug %}" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:bg-gray-200 transition-colors shadow-sm z-10" aria-label="Quick View">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </a>
+
+            <!-- Product Image -->
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
+            {% else %}
+              <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}" class="max-h-36 object-contain">
+            {% endif %}
+            
+            <!-- Add To Cart Button -->
+            <div class="absolute bottom-0 left-0 right-0">
+              <button type="button" data-product-id="{{ product.id }}" data-url="{% url 'mainsite:add_to_cart' product.id %}" class="add-to-cart-btn w-full bg-black text-white text-xs sm:text-sm py-2.5 flex items-center justify-center space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 lg:opacity-100 transition-opacity duration-300 cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span>Add To Cart</span>
+              </button>
             </div>
-            <span class="text-xs text-gray-500 font-semibold">(65)</span>
           </div>
-        </div>
-      </div>
 
-      <!-- Item 2: IPS LCD Gaming Monitor -->
-      <div class="group relative flex flex-col">
-        <div class="relative w-full h-64 bg-[#F5F5F5] rounded flex items-center justify-center p-6 overflow-hidden">
-          <button type="button" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:bg-gray-200 transition-colors shadow-sm" aria-label="Quick View">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-            </svg>
-          </button>
-          <img src="{% static 'images/gaming-monitor.png' %}" alt="IPS LCD Gaming Monitor" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
-          
-          <button type="button" class="absolute bottom-0 left-0 right-0 bg-black text-white text-xs sm:text-sm py-2.5 flex items-center justify-center space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 lg:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <span>Add To Cart</span>
-          </button>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-medium text-black text-base truncate">IPS LCD Gaming Monitor</h3>
-          <div class="flex items-center space-x-3 text-base">
-            <span class="text-[#DB4444] font-semibold">$1160</span>
-          </div>
-          <div class="flex items-center space-x-2 pt-1">
-            <div class="flex text-amber-400 space-x-0.5">
-              {% with rating=5 %}
-                {% for i in "12345" %}
-                  {% if forloop.counter <= rating %}
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                  {% else %}
-                    <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                  {% endif %}
-                {% endfor %}
-              {% endwith %}
+          <!-- Details & Ratings -->
+          <div class="mt-4 space-y-1">
+            <h3 class="font-medium text-black text-base truncate">{{ product.name }}</h3>
+            <div class="flex items-center space-x-3 text-base">
+              <span class="text-[#DB4444] font-semibold">${{ product.price }}</span>
+              {% if product.old_price %}
+                <span class="text-gray-400 line-through text-sm">${{ product.old_price }}</span>
+              {% endif %}
             </div>
-            <span class="text-xs text-gray-500 font-semibold">(65)</span>
           </div>
         </div>
-      </div>
-
-      <!-- Item 3: HAVIT HV-G92 Gamepad -->
-      <div class="group relative flex flex-col">
-        <div class="relative w-full h-64 bg-[#F5F5F5] rounded flex items-center justify-center p-6 overflow-hidden">
-          <span class="absolute top-3 left-3 bg-[#00FF66] text-black text-xs px-3 py-1 font-semibold rounded">
-            NEW
-          </span>
-          <button type="button" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:bg-gray-200 transition-colors shadow-sm" aria-label="Quick View">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-            </svg>
-          </button>
-          <img src="{% static 'images/gamepad-red.png' %}" alt="HAVIT HV-G92 Gamepad" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
-          
-          <button type="button" class="absolute bottom-0 left-0 right-0 bg-black text-white text-xs sm:text-sm py-2.5 flex items-center justify-center space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 lg:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <span>Add To Cart</span>
-          </button>
+      {% empty %}
+        <div class="col-span-full py-12 text-center text-gray-500">
+          No recommendations available right now.
         </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-medium text-black text-base truncate">HAVIT HV-G92 Gamepad</h3>
-          <div class="flex items-center space-x-3 text-base">
-            <span class="text-[#DB4444] font-semibold">$560</span>
-          </div>
-          <div class="flex items-center space-x-2 pt-1">
-            <div class="flex text-amber-400 space-x-0.5">
-              {% with rating=5 %}
-                {% for i in "12345" %}
-                  {% if forloop.counter <= rating %}
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                  {% else %}
-                    <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                  {% endif %}
-                {% endfor %}
-              {% endwith %}
-            </div>
-            <span class="text-xs text-gray-500 font-semibold">(65)</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Item 4: AK-900 Wired Keyboard -->
-      <div class="group relative flex flex-col">
-        <div class="relative w-full h-64 bg-[#F5F5F5] rounded flex items-center justify-center p-6 overflow-hidden">
-          <button type="button" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center text-black hover:bg-gray-200 transition-colors shadow-sm" aria-label="Quick View">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-            </svg>
-          </button>
-          <img src="{% static 'images/keyboard.png' %}" alt="AK-900 Wired Keyboard" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
-          
-          <button type="button" class="absolute bottom-0 left-0 right-0 bg-black text-white text-xs sm:text-sm py-2.5 flex items-center justify-center space-x-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 lg:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <span>Add To Cart</span>
-          </button>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-medium text-black text-base truncate">AK-900 Wired Keyboard</h3>
-          <div class="flex items-center space-x-3 text-base">
-            <span class="text-[#DB4444] font-semibold">$200</span>
-          </div>
-          <div class="flex items-center space-x-2 pt-1">
-            <div class="flex text-amber-400 space-x-0.5">
-              {% with rating=5 %}
-                {% for i in "12345" %}
-                  {% if forloop.counter <= rating %}
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                  {% else %}
-                    <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                  {% endif %}
-                {% endfor %}
-              {% endwith %}
-            </div>
-            <span class="text-xs text-gray-500 font-semibold">(65)</span>
-          </div>
-        </div>
-      </div>
-
+      {% endfor %}
     </div>
   </div>
 
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Helper function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // 1. Remove from Wishlist Button
+    document.querySelectorAll('.remove-wishlist-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const url = this.getAttribute('data-url');
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                // Handle both JSON responses or standard redirects cleanly
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    return response.json().catch(() => ({}));
+                }
+            })
+            .then(data => {
+                window.location.reload();
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
+    // 2. Add to Cart Button (from Wishlist or Just For You)
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const url = this.getAttribute('data-url');
+            
+            const formData = new URLSearchParams();
+            formData.append('quantity', 1);
+            formData.append('csrfmiddlewaretoken', csrftoken);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData.toString()
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert("Failed to add product to cart.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
+   // 3. Move All To Bag Button (Fixed response handler)
+   const moveAllBtn = document.querySelector('.move-all-btn');
+   if (moveAllBtn) {
+        moveAllBtn.addEventListener('click', function () {
+            const url = this.getAttribute('data-url');
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                // If the Django view redirects, follow the redirection URL automatically
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    // Fallback attempt to parse JSON or simply reload to cart page
+                    return response.text().then(text => {
+                        try {
+                            const data = JSON.parse(text);
+                            if (data.redirect_url) {
+                                window.location.href = data.redirect_url;
+                                return;
+                            }
+                        } catch (e) {
+                            // Not JSON, fallback to cart page route
+                        }
+                        window.location.href = "{% url 'mainsite:cart' %}";
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                window.location.href = "{% url 'mainsite:cart' %}";
+            });
+        });
+   }
+});
+</script>
 {% endblock content %}

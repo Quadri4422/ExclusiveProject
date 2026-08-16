@@ -1,0 +1,97 @@
+{% extends '../shared/layout.html' %}
+{% load static %}
+
+{% block title %}
+    Order Confirmed - Exclusive101
+{% endblock title %}
+
+{% block content %}
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 font-sans">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-8 sm:p-12 text-center space-y-8">
+    
+    <!-- Success Icon -->
+    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+      </svg>
+    </div>
+
+    <!-- Confirmation Header -->
+    <div class="space-y-2">
+      <h1 class="text-3xl font-bold text-gray-900">Thank You for Your Order!</h1>
+      <p class="text-gray-500 text-sm">Your order <span class="font-semibold text-black">#{{ order.id }}</span> has been placed successfully.</p>
+    </div>
+
+    <!-- Order Summary Box -->
+    <div class="bg-[#F5F5F5] rounded-lg p-6 text-left space-y-4">
+      <h2 class="text-lg font-medium text-black border-b border-gray-300 pb-3">Order Details</h2>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
+        <div>
+          <p class="text-xs text-gray-400">Date Placed</p>
+          <p class="font-medium text-black">{{ order.created_at|date:"F j, Y, g:i a"|default:"Today" }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-gray-400">Payment Status</p>
+          <p class="font-medium text-green-600">Confirmed</p>
+        </div>
+      </div>
+
+      <!-- Items List -->
+      <div class="divide-y divide-gray-200 pt-2">
+        {% for item in order_items %}
+          <div class="py-3 flex justify-between items-center text-sm">
+            <div class="flex items-center space-x-3">
+              {% if item.product.images.first %}
+                <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}" class="w-10 h-10 object-contain">
+              {% elif item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-10 h-10 object-contain">
+              {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="{{ item.product.name }}" class="w-10 h-10 object-contain">
+              {% endif %}
+              <div>
+                <p class="font-medium text-black">{{ item.product.name }}</p>
+                <p class="text-xs text-gray-400">Qty: {{ item.quantity }}</p>
+              </div>
+            </div>
+            <span class="font-medium text-black">${{ item.price }}</span>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Total Breakdown -->
+      <div class="border-t border-gray-300 pt-3 space-y-1 text-sm">
+        <div class="flex justify-between text-gray-600">
+          <span>Subtotal</span>
+          <span>${{ order.subtotal }}</span>
+        </div>
+        {% if order.discount_amount > 0 %}
+          <div class="flex justify-between text-green-600">
+            <span>Discount</span>
+            <span>-${{ order.discount_amount }}</span>
+          </div>
+        {% endif %}
+        <div class="flex justify-between text-gray-600">
+          <span>Shipping</span>
+          <span>{% if order.shipping_cost > 0 %}${{ order.shipping_cost }}{% else %}Free{% endif %}</span>
+        </div>
+        <div class="flex justify-between font-bold text-black text-base pt-2 border-t border-gray-200">
+          <span>Total</span>
+          <span>${{ order.total_amount }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+      <a href="{% url 'mainsite:index' %}" class="px-8 py-3.5 bg-[#DB4444] text-white rounded text-sm font-medium hover:bg-red-600 transition-colors">
+        Continue Shopping
+      </a>
+      <a href="{% url 'mainsite:profile' %}" class="px-8 py-3.5 border border-gray-300 text-black rounded text-sm font-medium hover:bg-gray-50 transition-colors">
+        View Profile
+      </a>
+    </div>
+
+  </div>
+</section>
+{% endblock content %}

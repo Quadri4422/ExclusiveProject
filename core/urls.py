@@ -9,6 +9,7 @@ urlpatterns = [
     path('account/', include('account.urls')),
 ]
 
+handler404 = 'mainsite.views.custom_404_view'
 
 if settings.DEBUG:
     urlpatterns += static(

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    log in - Exclusive101
+    Log in - Exclusive101
 {% endblock title %}
 
 {% block content %}
@@ -12,7 +12,7 @@
     <!-- Left Banner Image Column -->
     <div class="lg:col-span-7 flex justify-center lg:justify-start">
       <img 
-        src="{% static 'image/Side Image.png' %}" 
+        src="{% static 'images/Side Image.png' %}" 
         alt="Shopping cart and mobile phone preview" 
         class="w-full max-w-lg lg:max-w-full h-auto object-cover rounded"
       >
@@ -31,8 +31,28 @@
         </p>
       </div>
 
+      <!-- Django Messages (Success / Error alerts) -->
+      {% if messages %}
+        <div class="space-y-2">
+          {% for message in messages %}
+            <div class="p-3.5 text-xs sm:text-sm rounded border {% if message.tags == 'error' %}bg-red-50 text-red-700 border-red-200{% else %}bg-green-50 text-green-700 border-green-200{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Non-field Errors (Form validation errors) -->
+      {% if form.non_field_errors %}
+        <div class="p-3.5 text-xs sm:text-sm bg-red-50 text-red-700 border border-red-200 rounded space-y-1">
+          {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
       <!-- Log In Form -->
-      <form action="#" method="POST" class="space-y-8">
+      <form action="{% url 'account:login' %}" method="POST" class="space-y-8">
         {% csrf_token %}
 
         <!-- Input Fields Group -->
@@ -41,26 +61,51 @@
             <input 
               type="text" 
               name="email_or_phone" 
+              value="{{ request.POST.email_or_phone|default:'' }}"
               placeholder="Email or Phone Number" 
               required 
               class="w-full border-b border-gray-300 py-2.5 text-xs sm:text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
             >
+            {% if form.email_or_phone.errors %}
+              <p class="text-xs text-red-500 mt-1">{{ form.email_or_phone.errors.0 }}</p>
+            {% endif %}
           </div>
 
-          <div>
+          <!-- Password Field with Eye Toggle Icon -->
+          <div class="relative">
             <input 
+              id="passwordInput"
               type="password" 
               name="password" 
               placeholder="Password" 
               required 
-              class="w-full border-b border-gray-300 py-2.5 text-xs sm:text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+              class="w-full border-b border-gray-300 py-2.5 pr-10 text-xs sm:text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
             >
+            <button 
+              type="button" 
+              id="togglePassword" 
+              class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black focus:outline-none p-1"
+              aria-label="Toggle password visibility"
+            >
+              <!-- Eye Icon (Show Password) -->
+              <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+
+              <!-- Eye Off Icon (Hide Password) -->
+              <svg id="eyeOffIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a10.038 10.038 0 013.982-.82c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21M3 3l18 18" />
+              </svg>
+            </button>
+            {% if form.password.errors %}
+              <p class="text-xs text-red-500 mt-1">{{ form.password.errors.0 }}</p>
+            {% endif %}
           </div>
         </div>
 
         <!-- Action Row: Log In Button & Forget Password Link -->
         <div class="flex items-center justify-between pt-2">
-          <!-- Submit Button -->
           <button 
             type="submit" 
             class="px-12 py-3.5 bg-[#DB4444] text-white rounded text-xs sm:text-sm font-medium hover:bg-red-600 transition-colors duration-200"
@@ -68,9 +113,8 @@
             Log In
           </button>
 
-          <!-- Forget Password Link -->
           <a 
-            href="#" 
+            href="{% url 'account:password_reset' %}" 
             class="text-xs sm:text-sm text-[#DB4444] font-medium hover:underline transition-colors"
           >
             Forget Password?
@@ -78,8 +122,35 @@
         </div>
 
       </form>
+
+      <!-- Optional Signup Redirect Footer -->
+      <div class="text-center text-xs sm:text-sm text-gray-500">
+        Don't have an account? 
+        <a href="{% url 'account:signup' %}" class="text-black font-medium hover:underline">Sign up</a>
+      </div>
+
     </div>
 
   </div>
 </section>
+
+<!-- Password Visibility Toggle Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('passwordInput');
+    const eyeIcon = document.getElementById('eyeIcon');
+    const eyeOffIcon = document.getElementById('eyeOffIcon');
+
+    if (togglePassword && passwordInput) {
+      togglePassword.addEventListener('click', () => {
+        const isPassword = passwordInput.getAttribute('type') === 'password';
+        passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+        
+        eyeIcon.classList.toggle('hidden');
+        eyeOffIcon.classList.toggle('hidden');
+      });
+    }
+  });
+</script>
 {% endblock content %}

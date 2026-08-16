@@ -1,0 +1,90 @@
+{% extends '../shared/layout.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <nav class="text-xs text-gray-500 mb-4">
+            <a href="{% url 'mainsite:index' %}" class="hover:underline">Home</a> / <span class="text-black">FAQ</span>
+        </nav>
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-wider text-black">Frequently Asked Questions</h1>
+        <p class="text-gray-600 text-sm mt-2">Got questions? We've got answers about orders, shipping, and returns.</p>
+    </div>
+
+    <!-- FAQ Accordion List -->
+    <div class="space-y-4" id="faq-accordion">
+        
+        <!-- Item 1 -->
+        <div class="border border-gray-200 rounded-lg overflow-hidden transition-all">
+            <button class="faq-btn w-full flex items-center justify-between p-4 sm:p-5 text-left font-medium text-black bg-gray-50 hover:bg-gray-100 transition-colors">
+                <span>How do I track my order?</span>
+                <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div class="faq-content hidden p-4 sm:p-5 text-gray-600 text-sm sm:text-base bg-white border-t border-gray-100">
+                Once your order is shipped, you will receive an email notification containing your tracking number and a link to trace your package's delivery status. You can also view order tracking information directly under your <a href="{% url 'mainsite:profile' %}" class="text-[#DB4444] underline">My Account</a> page.
+            </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="border border-gray-200 rounded-lg overflow-hidden transition-all">
+            <button class="faq-btn w-full flex items-center justify-between p-4 sm:p-5 text-left font-medium text-black bg-gray-50 hover:bg-gray-100 transition-colors">
+                <span>What is your return policy?</span>
+                <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div class="faq-content hidden p-4 sm:p-5 text-gray-600 text-sm sm:text-base bg-white border-t border-gray-100">
+                We offer a 30-day return policy for all eligible items. Products must be unused, in their original packaging, and accompanied by the receipt or proof of purchase.
+            </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="border border-gray-200 rounded-lg overflow-hidden transition-all">
+            <button class="faq-btn w-full flex items-center justify-between p-4 sm:p-5 text-left font-medium text-black bg-gray-50 hover:bg-gray-100 transition-colors">
+                <span>What payment methods do you accept?</span>
+                <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div class="faq-content hidden p-4 sm:p-5 text-gray-600 text-sm sm:text-base bg-white border-t border-gray-100">
+                We accept major credit and debit cards (Visa, MasterCard, American Express), PayPal, and secure regional online payment methods at checkout.
+            </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="border border-gray-200 rounded-lg overflow-hidden transition-all">
+            <button class="faq-btn w-full flex items-center justify-between p-4 sm:p-5 text-left font-medium text-black bg-gray-50 hover:bg-gray-100 transition-colors">
+                <span>How can I modify or cancel my order?</span>
+                <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div class="faq-content hidden p-4 sm:p-5 text-gray-600 text-sm sm:text-base bg-white border-t border-gray-100">
+                Orders can be modified or canceled within 2 hours of placement. Please contact our support team immediately through our <a href="{% url 'mainsite:contact' %}" class="text-[#DB4444] underline">Contact page</a> for assistance.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- FAQ Accordion Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const faqButtons = document.querySelectorAll('.faq-btn');
+
+        faqButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('svg');
+
+                // Toggle visibility
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+    });
+</script>
+{% endblock %}

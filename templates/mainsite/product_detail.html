@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    product detail - Exclusive101
+    {{ product.name }} - Exclusive101
 {% endblock title %}
 
 {% block content %}
@@ -10,13 +10,16 @@
   
   <!-- Breadcrumb Navigation -->
   <nav class="text-xs sm:text-sm text-gray-400 flex flex-wrap items-center gap-2">
-    <a href="#" class="hover:text-black transition-colors">Account</a>
+    <a href="{% url 'mainsite:index' %}" class="hover:text-black transition-colors">Home</a>
     <span>/</span>
-    <a href="#" class="hover:text-black transition-colors">Gaming</a>
-    <span>/</span>
-    <span class="text-black font-medium">Havic HV G-92 Gamepad</span>
+    {% if product.category %}
+      <a href="{% url 'mainsite:category_detail' product.category.slug %}" class="hover:text-black transition-colors">{{ product.category.name }}</a>
+      <span>/</span>
+    {% endif %}
+    <span class="text-black font-medium">{{ product.name }}</span>
   </nav>
 
+  {% if product %}
   <!-- Main Product Detail Section -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
     
@@ -25,23 +28,26 @@
       
       <!-- Thumbnails Stack -->
       <div class="flex md:flex-col gap-4 overflow-x-auto md:overflow-visible shrink-0">
-        <button type="button" class="w-20 h-20 sm:w-24 sm:h-24 bg-[#F5F5F5] rounded flex items-center justify-center p-2 border border-transparent hover:border-black transition-colors focus:outline-none">
-          <img src="{% static 'images/ps5-dock.png' %}" alt="Thumbnail 1" class="max-h-full max-w-full object-contain">
-        </button>
-        <button type="button" class="w-20 h-20 sm:w-24 sm:h-24 bg-[#F5F5F5] rounded flex items-center justify-center p-2 border border-transparent hover:border-black transition-colors focus:outline-none">
-          <img src="{% static 'images/ps5-front.png' %}" alt="Thumbnail 2" class="max-h-full max-w-full object-contain">
-        </button>
-        <button type="button" class="w-20 h-20 sm:w-24 sm:h-24 bg-[#F5F5F5] rounded flex items-center justify-center p-2 border border-transparent hover:border-black transition-colors focus:outline-none">
-          <img src="{% static 'images/ps5-side.png' %}" alt="Thumbnail 3" class="max-h-full max-w-full object-contain">
-        </button>
-        <button type="button" class="w-20 h-20 sm:w-24 sm:h-24 bg-[#F5F5F5] rounded flex items-center justify-center p-2 border border-transparent hover:border-black transition-colors focus:outline-none">
-          <img src="{% static 'images/ps5-angle.png' %}" alt="Thumbnail 4" class="max-h-full max-w-full object-contain">
-        </button>
+        {% if product.image %}
+          <button type="button" onclick="changeMainImage('{{ product.image.url }}')" class="w-20 h-20 sm:w-24 sm:h-24 bg-[#F5F5F5] rounded flex items-center justify-center p-2 border border-black focus:outline-none thumbnail-btn">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="max-h-full max-w-full object-contain">
+          </button>
+        {% endif %}
+        
+        {% for img in product.images.all %}
+          <button type="button" onclick="changeMainImage('{{ img.image.url }}')" class="w-20 h-20 sm:w-24 sm:h-24 bg-[#F5F5F5] rounded flex items-center justify-center p-2 border border-transparent hover:border-black transition-colors focus:outline-none thumbnail-btn">
+            <img src="{{ img.image.url }}" alt="{{ product.name }}" class="max-h-full max-w-full object-contain">
+          </button>
+        {% endfor %}
       </div>
 
       <!-- Main Featured Image -->
-      <div class="flex-1 bg-[#F5F5F5] rounded flex items-center justify-center p-6 min-h-80 sm:min-h-125">
-        <img src="{% static 'images/ps5-controller-main.png' %}" alt="Havic HV G-92 Gamepad" class="max-h-100 w-auto object-contain">
+      <div class="flex-1 bg-[#F5F5F5] rounded flex items-center justify-center p-6 min-h-[320px] sm:min-h-[500px]">
+        {% if product.image %}
+          <img id="main-product-image" src="{{ product.image.url }}" alt="{{ product.name }}" class="max-h-[400px] w-auto object-contain">
+        {% else %}
+          <img id="main-product-image" src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}" class="max-h-[400px] w-auto object-contain">
+        {% endif %}
       </div>
 
     </div>
@@ -51,10 +57,10 @@
       
       <!-- Title -->
       <h1 class="text-2xl font-semibold tracking-wide text-black">
-        Havic HV G-92 Gamepad
+        {{ product.name }}
       </h1>
 
-      <!-- Backend-Controlled Font Awesome Ratings -->
+      <!-- Star Rating & Stock Status -->
       <div class="flex items-center space-x-3 text-xs sm:text-sm">
         <div class="flex items-center space-x-1 text-amber-500">
           <i class="fa-solid fa-star"></i>
@@ -63,68 +69,58 @@
           <i class="fa-solid fa-star"></i>
           <i class="fa-regular fa-star text-gray-300"></i>
         </div>
-        <span class="text-gray-400">(150 Reviews)</span>
+        <span class="text-gray-400">({{ product.reviews_count|default:"150" }} Reviews)</span>
         <span class="text-gray-300">|</span>
-        <span class="text-[#00FF66] font-medium">In Stock</span>
+        {% if product.stock > 0 %}
+          <span class="text-[#00FF66] font-medium">In Stock</span>
+        {% else %}
+          <span class="text-red-500 font-medium">Out of Stock</span>
+        {% endif %}
       </div>
 
       <!-- Price -->
-      <div class="text-2xl font-medium text-black">
-        $192.00
+      <div class="flex items-center space-x-3 text-2xl font-medium">
+        {% if product.discount_price %}
+          <span class="text-[#DB4444]">${{ product.discount_price }}</span>
+          <span class="text-gray-400 line-through text-lg">${{ product.price }}</span>
+        {% else %}
+          <span class="text-black">${{ product.price }}</span>
+        {% endif %}
       </div>
 
       <!-- Description -->
       <p class="text-xs sm:text-sm text-black leading-relaxed border-b border-gray-300 pb-6">
-        PlayStation 5 Controller Skin High quality vinyl with air channel adhesive for easy bubble free install & mess free removal Pressure sensitive.
+        {{ product.description }}
       </p>
 
-      <!-- Colour Options -->
-      <div class="flex items-center space-x-4 pt-1">
-        <span class="text-sm text-black font-normal">Colours:</span>
-        <div class="flex items-center space-x-2">
-          <button type="button" class="w-5 h-5 rounded-full bg-[#A0BCE0] ring-2 ring-offset-2 ring-black focus:outline-none"></button>
-          <button type="button" class="w-5 h-5 rounded-full bg-[#E07575] focus:outline-none hover:scale-110 transition-transform"></button>
-        </div>
-      </div>
-
-      <!-- Size Options -->
-      <div class="flex items-center space-x-4 pt-1">
-        <span class="text-sm text-black font-normal">Size:</span>
-        <div class="flex items-center space-x-2">
-          <button type="button" class="w-8 h-8 rounded border border-gray-400 flex items-center justify-center text-xs font-medium text-black hover:bg-[#DB4444] hover:text-white hover:border-[#DB4444] transition-colors">XS</button>
-          <button type="button" class="w-8 h-8 rounded border border-gray-400 flex items-center justify-center text-xs font-medium text-black hover:bg-[#DB4444] hover:text-white hover:border-[#DB4444] transition-colors">S</button>
-          <button type="button" class="w-8 h-8 rounded bg-[#DB4444] border border-[#DB4444] flex items-center justify-center text-xs font-medium text-white">M</button>
-          <button type="button" class="w-8 h-8 rounded border border-gray-400 flex items-center justify-center text-xs font-medium text-black hover:bg-[#DB4444] hover:text-white hover:border-[#DB4444] transition-colors">L</button>
-          <button type="button" class="w-8 h-8 rounded border border-gray-400 flex items-center justify-center text-xs font-medium text-black hover:bg-[#DB4444] hover:text-white hover:border-[#DB4444] transition-colors">XL</button>
-        </div>
-      </div>
-
-      <!-- Quantity & Buy Actions Row -->
-      <div class="flex flex-wrap items-center gap-4 pt-2">
+      <!-- Cart / Purchase Actions Container -->
+      <div class="space-y-5">
         
-        <!-- Quantity Selector -->
-        <div class="flex items-center border border-gray-400 rounded overflow-hidden">
-          <button type="button" class="w-10 h-11 flex items-center justify-center text-xl font-medium text-black hover:bg-[#DB4444] hover:text-white transition-colors border-r border-gray-400">
-            -
+        <!-- Quantity & Buy Actions Row -->
+        <div class="flex flex-wrap items-center gap-4 pt-2">
+          
+          <!-- Quantity Selector -->
+          <div class="flex items-center border border-gray-400 rounded overflow-hidden">
+            <button type="button" id="decrement-btn" class="w-10 h-11 flex items-center justify-center text-xl font-medium text-black hover:bg-[#DB4444] hover:text-white transition-colors border-r border-gray-400 cursor-pointer">
+              -
+            </button>
+            <input type="number" id="quantity-input" value="1" min="1" max="{{ product.stock|default:99 }}" class="w-14 h-11 text-center text-base font-semibold text-black focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+            <button type="button" id="increment-btn" class="w-10 h-11 flex items-center justify-center text-xl font-medium bg-[#DB4444] text-white hover:bg-red-600 transition-colors cursor-pointer">
+              +
+            </button>
+          </div>
+
+          <!-- Add / Buy Now Button -->
+          <button type="button" id="add-to-cart-main" data-url="{% url 'mainsite:add_to_cart' product.id %}" class="flex-1 sm:flex-none px-9 py-3 bg-[#DB4444] text-white text-sm font-medium rounded hover:bg-red-600 transition-colors cursor-pointer">
+            Buy Now
           </button>
-          <span class="w-14 h-11 flex items-center justify-center text-base font-semibold text-black">
-            2
-          </span>
-          <button type="button" class="w-10 h-11 flex items-center justify-center text-xl font-medium bg-[#DB4444] text-white hover:bg-red-600 transition-colors">
-            +
+
+          <!-- Wishlist Toggle (Fixed with data-url for AJAX POST request) -->
+          <button type="button" id="wishlist-main-btn" data-url="{% url 'mainsite:add_to_wishlist' product.id %}" class="p-2.5 border border-gray-400 rounded hover:border-black transition-colors flex items-center justify-center cursor-pointer">
+            <i class="fa-regular fa-heart text-xl text-black"></i>
           </button>
+
         </div>
-
-        <!-- Buy Now Button -->
-        <button type="button" class="flex-1 sm:flex-none px-9 py-3 bg-[#DB4444] text-white text-sm font-medium rounded hover:bg-red-600 transition-colors">
-          Buy Now
-        </button>
-
-        <!-- Wishlist Button -->
-        <button type="button" class="p-2.5 border border-gray-400 rounded hover:border-black transition-colors flex items-center justify-center">
-          <i class="fa-regular fa-heart text-xl text-black"></i>
-        </button>
-
       </div>
 
       <!-- Delivery & Return Information Box -->
@@ -149,6 +145,7 @@
     </div>
 
   </div>
+  {% endif %}
 
   <!-- Related Items Section -->
   <div class="space-y-8 pt-10">
@@ -156,203 +153,239 @@
     <!-- Section Header Badge -->
     <div class="flex items-center space-x-4">
       <div class="w-5 h-10 bg-[#DB4444] rounded-sm"></div>
-      <h2 class="text-base font-semibold text-[#DB4444]">Related Item</h2>
+      <h2 class="text-base font-semibold text-[#DB4444]">Related Items</h2>
     </div>
 
-    <!-- Product Grid -->
+    <!-- Related Product Dynamic Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       
-      <!-- Card 1: HAVIT HV-G92 Gamepad -->
-      <div class="space-y-3">
-        <!-- Image Container with Hover/Mobile "Add To Cart" Overlay -->
-        <div class="group relative bg-[#F5F5F5] rounded h-64 flex flex-col justify-between overflow-hidden">
-          
-          <!-- Top Badges & Action Buttons -->
-          <div class="p-3 flex justify-between items-start z-10">
-            <span class="bg-[#DB4444] text-white text-xs px-3 py-1 rounded font-medium">
-              -40%
-            </span>
-            <div class="flex flex-col space-y-2">
-              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
-                <i class="fa-regular fa-heart text-xs"></i>
-              </button>
-              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
-                <i class="fa-regular fa-eye text-xs"></i>
-              </button>
+      {% for rel_product in related_products %}
+        <div class="space-y-3 group">
+          <!-- Image Container with Overlay -->
+          <div class="relative bg-[#F5F5F5] rounded h-64 flex flex-col justify-between overflow-hidden">
+            
+            <!-- Top Badges & Action Buttons -->
+            <div class="p-3 flex justify-between items-start z-10 w-full">
+              {% if rel_product.discount_price %}
+                <span class="bg-[#DB4444] text-white text-xs px-3 py-1 rounded font-medium">
+                  Sale
+                </span>
+              {% else %}
+                <div></div>
+              {% endif %}
+              
+              <div class="flex flex-col space-y-2">
+                <!-- Related Wishlist Button (Fixed with AJAX class & data-url) -->
+                <button type="button" data-url="{% url 'mainsite:add_to_wishlist' rel_product.id %}" class="related-wishlist-btn w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors cursor-pointer">
+                  <i class="fa-regular fa-heart text-xs"></i>
+                </button>
+                <a href="{% url 'mainsite:product_detail' rel_product.slug %}" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
+                  <i class="fa-regular fa-eye text-xs"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Product Image -->
+            <div class="absolute inset-0 flex items-center justify-center p-6">
+              {% if rel_product.image %}
+                <img src="{{ rel_product.image.url }}" alt="{{ rel_product.name }}" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
+              {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="{{ rel_product.name }}" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
+              {% endif %}
             </div>
           </div>
 
-          <!-- Product Image -->
-          <div class="absolute inset-0 flex items-center justify-center p-6">
-            <img src="{% static 'images/gamepad-red.png' %}" alt="HAVIT HV-G92 Gamepad" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
+          <!-- Add to Cart Button for Related Items -->
+          <div>
+            <button 
+              type="button" 
+              class="related-add-btn w-full bg-black text-white py-2.5 text-sm font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 duration-300 flex items-center justify-center space-x-2 hover:bg-red-500 transition-colors cursor-pointer"
+              data-url="{% url 'mainsite:add_to_cart' rel_product.id %}">
+              Add to Cart
+            </button>
           </div>
 
-          <!-- "Add To Cart" Button: Always visible on Mobile/Tablet, visible on hover for Desktop (lg+) -->
-          <button type="button" class="absolute bottom-0 inset-x-0 w-full bg-black text-white py-2.5 text-xs font-medium text-center z-20 transition-all duration-300 ease-in-out opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-full lg:group-hover:opacity-100 lg:group-hover:translate-y-0 hover:bg-gray-900">
-            Add To Cart
-          </button>
-        </div>
-
-        <h3 class="font-medium text-black text-sm truncate">HAVIT HV-G92 Gamepad</h3>
-        <div class="flex items-center space-x-3 text-sm">
-          <span class="text-[#DB4444] font-medium">$120</span>
-          <span class="text-gray-400 line-through">$160</span>
-        </div>
-        
-        <!-- Font Awesome Backend Star Rating Loop -->
-        <div class="flex items-center space-x-2 text-xs">
-          <div class="flex space-x-1 text-amber-500">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-          </div>
-          <span class="text-gray-400 font-medium">(88)</span>
-        </div>
-      </div>
-
-
-      <!-- Card 2: AK-900 Wired Keyboard -->
-      <div class="space-y-3">
-        <div class="group relative bg-[#F5F5F5] rounded h-64 flex flex-col justify-between overflow-hidden">
+          <h3 class="font-medium text-black text-sm truncate">
+            <a href="{% url 'mainsite:product_detail' rel_product.slug %}" class="hover:underline">
+              {{ rel_product.name }}
+            </a>
+          </h3>
           
-          <div class="p-3 flex justify-between items-start z-10">
-            <span class="bg-[#DB4444] text-white text-xs px-3 py-1 rounded font-medium">
-              -35%
-            </span>
-            <div class="flex flex-col space-y-2">
-              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
-                <i class="fa-regular fa-heart text-xs"></i>
-              </button>
-              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
-                <i class="fa-regular fa-eye text-xs"></i>
-              </button>
-            </div>
+          <div class="flex items-center space-x-3 text-sm">
+            {% if rel_product.discount_price %}
+              <span class="text-[#DB4444] font-medium">${{ rel_product.discount_price }}</span>
+              <span class="text-gray-400 line-through">${{ rel_product.price }}</span>
+            {% else %}
+              <span class="text-[#DB4444] font-medium">${{ rel_product.price }}</span>
+            {% endif %}
           </div>
-
-          <div class="absolute inset-0 flex items-center justify-center p-6">
-            <img src="{% static 'images/keyboard.png' %}" alt="AK-900 Wired Keyboard" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
-          </div>
-
-          <!-- Add To Cart -->
-          <button type="button" class="absolute bottom-0 inset-x-0 w-full bg-black text-white py-2.5 text-xs font-medium text-center z-20 transition-all duration-300 ease-in-out opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-full lg:group-hover:opacity-100 lg:group-hover:translate-y-0 hover:bg-gray-900">
-            Add To Cart
-          </button>
-        </div>
-
-        <h3 class="font-medium text-black text-sm truncate">AK-900 Wired Keyboard</h3>
-        <div class="flex items-center space-x-3 text-sm">
-          <span class="text-[#DB4444] font-medium">$960</span>
-          <span class="text-gray-400 line-through">$1160</span>
-        </div>
-        
-        <div class="flex items-center space-x-2 text-xs">
-          <div class="flex space-x-1 text-amber-500">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-regular fa-star text-gray-300"></i>
-          </div>
-          <span class="text-gray-400 font-medium">(75)</span>
-        </div>
-      </div>
-
-
-      <!-- Card 3: IPS LCD Gaming Monitor -->
-      <div class="space-y-3">
-        <div class="group relative bg-[#F5F5F5] rounded h-64 flex flex-col justify-between overflow-hidden">
           
-          <div class="p-3 flex justify-between items-start z-10">
-            <span class="bg-[#DB4444] text-white text-xs px-3 py-1 rounded font-medium">
-              -30%
-            </span>
-            <div class="flex flex-col space-y-2">
-              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
-                <i class="fa-regular fa-heart text-xs"></i>
-              </button>
-              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
-                <i class="fa-regular fa-eye text-xs"></i>
-              </button>
+          <!-- Rating -->
+          <div class="flex items-center space-x-2 text-xs">
+            <div class="flex space-x-1 text-amber-500">
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
             </div>
+            <span class="text-gray-400 font-medium">(88)</span>
           </div>
-
-          <div class="absolute inset-0 flex items-center justify-center p-6">
-            <img src="{% static 'images/gaming-monitor.png' %}" alt="IPS LCD Gaming Monitor" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
-          </div>
-
-          <!-- Add To Cart -->
-          <button type="button" class="absolute bottom-0 inset-x-0 w-full bg-black text-white py-2.5 text-xs font-medium text-center z-20 transition-all duration-300 ease-in-out opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-full lg:group-hover:opacity-100 lg:group-hover:translate-y-0 hover:bg-gray-900">
-            Add To Cart
-          </button>
         </div>
-
-        <h3 class="font-medium text-black text-sm truncate">IPS LCD Gaming Monitor</h3>
-        <div class="flex items-center space-x-3 text-sm">
-          <span class="text-[#DB4444] font-medium">$370</span>
-          <span class="text-gray-400 line-through">$400</span>
-        </div>
-        
-        <div class="flex items-center space-x-2 text-xs">
-          <div class="flex space-x-1 text-amber-500">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-          </div>
-          <span class="text-gray-400 font-medium">(99)</span>
-        </div>
-      </div>
-
-
-      <!-- Card 4: RGB liquid CPU Cooler -->
-      <div class="space-y-3">
-        <div class="group relative bg-[#F5F5F5] rounded h-64 flex flex-col justify-between overflow-hidden">
-          
-          <div class="p-3 flex justify-end items-start z-10">
-            <div class="flex flex-col space-y-2">
-              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
-                <i class="fa-regular fa-heart text-xs"></i>
-              </button>
-              <button type="button" class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-[#DB4444] hover:text-white transition-colors">
-                <i class="fa-regular fa-eye text-xs"></i>
-              </button>
-            </div>
-          </div>
-
-          <div class="absolute inset-0 flex items-center justify-center p-6">
-            <img src="{% static 'images/cpu-cooler.png' %}" alt="RGB liquid CPU Cooler" class="max-h-36 object-contain group-hover:scale-105 transition-transform duration-300">
-          </div>
-
-          <!-- Add To Cart -->
-          <button type="button" class="absolute bottom-0 inset-x-0 w-full bg-black text-white py-2.5 text-xs font-medium text-center z-20 transition-all duration-300 ease-in-out opacity-100 translate-y-0 lg:opacity-0 lg:translate-y-full lg:group-hover:opacity-100 lg:group-hover:translate-y-0 hover:bg-gray-900">
-            Add To Cart
-          </button>
-        </div>
-
-        <h3 class="font-medium text-black text-sm truncate">RGB liquid CPU Cooler</h3>
-        <div class="flex items-center space-x-3 text-sm">
-          <span class="text-[#DB4444] font-medium">$160</span>
-          <span class="text-gray-400 line-through">$170</span>
-        </div>
-        
-        <div class="flex items-center space-x-2 text-xs">
-          <div class="flex space-x-1 text-amber-500">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-regular fa-star text-gray-300"></i>
-          </div>
-          <span class="text-gray-400 font-medium">(65)</span>
-        </div>
-      </div>
+      {% empty %}
+        <p class="text-xs text-gray-500 col-span-full">No related products found.</p>
+      {% endfor %}
 
     </div>
 
   </div>
 
 </section>
+
+<!-- Interaction Scripts -->
+<script>
+  function changeMainImage(imageUrl) {
+    document.getElementById('main-product-image').src = imageUrl;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Quantity increment and decrement logic
+    const input = document.getElementById('quantity-input');
+    const incrementBtn = document.getElementById('increment-btn');
+    const decrementBtn = document.getElementById('decrement-btn');
+
+    if (input && incrementBtn && decrementBtn) {
+      incrementBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const max = parseInt(input.getAttribute('max')) || 99;
+        let currentVal = parseInt(input.value) || 1;
+        if (currentVal < max) {
+          input.value = currentVal + 1;
+        }
+      });
+
+      decrementBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        let currentVal = parseInt(input.value) || 1;
+        if (currentVal > 1) {
+          input.value = currentVal - 1;
+        }
+      });
+    }
+
+    // 2. Main Product Add-to-Cart AJAX submission
+    const mainAddToCartBtn = document.getElementById('add-to-cart-main');
+    if (mainAddToCartBtn) {
+      mainAddToCartBtn.addEventListener('click', () => {
+        const url = mainAddToCartBtn.getAttribute('data-url');
+        const quantity = input ? input.value : 1;
+
+        const formData = new URLSearchParams();
+        formData.append('quantity', quantity);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: formData.toString()
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert('Failed to add item to cart.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    }
+
+    // 3. Related Products Add-to-Cart AJAX submission
+    document.querySelectorAll('.related-add-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const url = button.getAttribute('data-url');
+
+        const formData = new URLSearchParams();
+        formData.append('quantity', 1);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: formData.toString()
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert('Failed to add item to cart.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    });
+
+    // 4. Main Product Wishlist AJAX POST Handler (Fixes 405 error)
+    const mainWishlistBtn = document.getElementById('wishlist-main-btn');
+    if (mainWishlistBtn) {
+      mainWishlistBtn.addEventListener('click', () => {
+        const url = mainWishlistBtn.getAttribute('data-url');
+        
+        const formData = new URLSearchParams();
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: formData.toString()
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert('Failed to update wishlist.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    }
+
+    // 5. Related Products Wishlist AJAX POST Handler
+    document.querySelectorAll('.related-wishlist-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const url = button.getAttribute('data-url');
+
+        const formData = new URLSearchParams();
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: formData.toString()
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert('Failed to update wishlist.');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    });
+
+  });
+</script>
 {% endblock content %}

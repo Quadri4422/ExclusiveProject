@@ -12,29 +12,18 @@
       <!-- Left Category Sidebar -->
       <aside class="w-full lg:w-1/4 pt-4 lg:pt-10 lg:pb-12 lg:pr-8 lg:border-r border-gray-200">
         <ul class="space-y-4 text-base font-normal text-black">
+          {% for category in categories %}
           <li>
-            <a href="#" class="flex items-center justify-between hover:text-red-500 transition-colors">
-              <span>Woman’s Fashion</span>
+            <a href="{% url 'mainsite:category_detail' category.slug %}" class="flex items-center justify-between hover:text-red-500 transition-colors">
+              <span>{{ category.name }}</span>
               <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
             </a>
           </li>
-          <li>
-            <a href="#" class="flex items-center justify-between hover:text-red-500 transition-colors">
-              <span>Men’s Fashion</span>
-              <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
-          </li>
-          <li><a href="#" class="block hover:text-red-500 transition-colors">Electronics</a></li>
-          <li><a href="#" class="block hover:text-red-500 transition-colors">Home & Lifestyle</a></li>
-          <li><a href="#" class="block hover:text-red-500 transition-colors">Medicine</a></li>
-          <li><a href="#" class="block hover:text-red-500 transition-colors">Sports & Outdoor</a></li>
-          <li><a href="#" class="block hover:text-red-500 transition-colors">Baby’s & Toys</a></li>
-          <li><a href="#" class="block hover:text-red-500 transition-colors">Groceries & Pets</a></li>
-          <li><a href="#" class="block hover:text-red-500 transition-colors">Health & Beauty</a></li>
+          {% empty %}
+          <li class="text-gray-500 text-sm">No categories available</li>
+          {% endfor %}
         </ul>
       </aside>
 
@@ -46,10 +35,8 @@
           <div class="z-10 max-w-md text-left space-y-5">
             <!-- Brand & Series -->
             <div class="flex items-center space-x-6">
-              <!-- Apple Logo SVG -->
-              <svg class="w-10 h-10 fill-current text-white" viewBox="0 0 170 170">
-                <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.33.13-9.13-1.9-14.4-6.08-3.41-2.73-7.3-7.42-11.68-14.07-6.22-9.33-11.12-19.49-14.72-30.49-3.6-11-5.4-21.43-5.4-31.29 0-14.61 3.73-26.68 11.19-36.21 7.46-9.53 16.89-14.41 28.29-14.65 4.67 0 9.88 1.16 15.64 3.49 5.76 2.33 9.68 3.49 11.77 3.49 1.76 0 5.74-1.22 11.95-3.66 6.21-2.44 11.49-3.54 15.84-3.3 12.33.85 22.09 5.37 29.28 13.56-11.01 6.66-16.36 15.82-16.05 27.48.31 9.06 3.86 16.71 10.65 22.95 6.79 6.24 14.88 9.87 24.27 10.89-2.22 6.53-5.11 13.12-8.67 19.77zM119.22 31.84c0-7.23 2.65-14.19 7.95-20.88 5.3-6.69 11.89-10.67 19.78-10.96.12 1.08.18 1.9.18 2.45 0 7.11-2.65 14.08-7.95 20.91-5.3 6.83-11.97 10.72-20.01 10.67-.06-.84-.09-1.57-.09-2.19z"/>
-              </svg>
+              <img src="{% static 'image/applelogo.png' %}" alt="Apple Logo" class="w-10 h-10">
+              
               <span class="text-base font-normal tracking-wide">iPhone 14 Series</span>
             </div>
 
@@ -149,105 +136,104 @@
   </div>
 
   <!-- Product Grid -->
+<!-- Dynamic Product Grid: Flash Sales -->
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
-    <!-- Item 1: HAVIT Gamepad -->
+    {% for product in flash_sales_products %}
     <div class="group relative flex flex-col justify-between">
       <div>
-        <!-- Image Card Area -->
         <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
           
-          <!-- Discount Badge -->
+          {% if product.badge %}
           <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-2.5 py-1 rounded">
-            -40%
+            {{ product.badge }}
           </span>
+          {% endif %}
 
-          <!-- Quick Actions (Wishlist & Quick View) -->
           <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
+             <button 
+                  type="button" 
+                  class="add-to-wishlist-btn w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors focus:outline-none" 
+                  data-url="{% url 'mainsite:add_to_wishlist' product.id %}"
+                  aria-label="Add to Wishlist">
+                  <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </button>
+
+            <a href="{% url 'mainsite:product_detail' product.slug %}" class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            </button>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg></a>
           </div>
 
-          <!-- Product Image -->
-          <img 
-            src="{% static 'image/frame 570.png' %}" 
-            alt="HAVIT HV-G92 Gamepad" 
-            class="max-h-40 object-contain group-hover:scale-105 transition-transform duration-300">
-
-          <!-- Add to Cart Overlay Button: Hidden by default, shows on hover (or stays visible on non-hover screens) -->
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2.5 text-sm font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2 hover:bg-red-500">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-              </svg>
-              <span>Add To Cart</span>
-            </button>
-          </form>
+          <a href="{% url 'mainsite:product_detail' product.slug %}" class="flex justify-center items-center h-full">
+            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'image/frame 570.png' %}{% endif %}" alt="{{ product.name }}" class="max-h-40 object-contain group-hover:scale-105 transition-transform duration-300"></a>
         </div>
 
-        <!-- Product Details -->
+           <!-- Add to Cart Button -->
+            <div>
+              <button 
+                type="button" 
+                class="add-to-cart-btn w-full bg-black text-white py-2.5 text-sm font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 duration-300 flex items-center justify-center space-x-2 hover:bg-red-500 transition-colors cursor-pointer"
+                data-product-id="{{ product.id }}"
+                data-url="{% url 'mainsite:add_to_cart' product.id %}">
+                Add to Cart
+              </button>
+            </div>
+
         <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-base text-gray-900 group-hover:text-red-500 transition-colors">HAVIT HV-G92 Gamepad</h3>
+          <a href="{% url 'mainsite:product_detail' product.slug %}">
+            <h3 class="font-semibold text-base text-gray-900 group-hover:text-red-500 transition-colors">{{ product.name }}</h3></a>
           <div class="flex items-center space-x-3 text-sm">
-            <span class="text-red-500 font-semibold">$120</span>
-            <span class="text-gray-400 line-through">$160</span>
+            {% if product.discount_price %}
+              <span class="text-red-500 font-semibold">${{ product.discount_price }}</span>
+              <span class="text-gray-400 line-through">${{ product.price }}</span>
+            {% else %}
+              <span class="text-red-500 font-semibold">${{ product.price }}</span>
+            {% endif %}
           </div>
 
-          <!-- Dynamic Rating Stars -->
           <div class="flex items-center space-x-1 pt-1">
             <div class="flex text-amber-400">
-              <!-- 5 Stars (Backend controllable) -->
               <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
               <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
               <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
               <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
               <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
             </div>
-            <span class="text-xs font-semibold text-gray-500 ml-1">(88)</span>
+            <span class="text-xs font-semibold text-gray-500 ml-1">({{ product.review_count }})</span>
           </div>
         </div>
       </div>
     </div>
-
+    {% empty %}
+      <p class="text-gray-500 col-span-full">No flash sale products currently available.</p>
+    {% endfor %}
   </div>
 
   <!-- View All Products CTA -->
   <div class="text-center mt-12">
-    <a href="#" class="inline-block bg-red-500 hover:bg-red-600 text-white font-medium px-12 py-4 rounded transition-colors">
+    <a href="{% url 'mainsite:categories' %}" class="inline-block bg-red-500 hover:bg-red-600 text-white font-medium px-12 py-4 rounded transition-colors">
       View All Products
     </a>
   </div>
 </section>
 
+<!-- CATEGORIES SECTION -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-  <!-- Top Horizontal Border Line -->
   <div class="border-t border-gray-200 mb-12"></div>
 
-  <!-- Section Header -->
   <div class="flex items-end justify-between mb-10">
     <div>
-      <!-- Tag Badge -->
       <div class="flex items-center space-x-3 mb-3">
         <div class="w-5 h-10 bg-red-500 rounded-sm"></div>
         <span class="text-red-500 font-semibold text-sm">Categories</span>
       </div>
-      <!-- Section Title -->
       <h2 class="text-3xl sm:text-4xl font-bold tracking-wider text-black">
         Browse By Category
       </h2>
     </div>
 
-    <!-- Navigation Arrows -->
     <div class="flex items-center space-x-2">
       <button class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors" aria-label="Previous Category">
         <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,196 +248,99 @@
     </div>
   </div>
 
-  <!-- Category Grid -->
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
-    
-    <!-- Category 1: Phones -->
-    <a href="#" class="group border border-gray-300 rounded flex flex-col items-center justify-center h-36 p-4 hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-300 shadow-sm">
-      <svg class="w-10 h-10 text-black group-hover:text-white transition-colors duration-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-      </svg>
-      <span class="text-sm font-medium text-black group-hover:text-white transition-colors duration-300">Phones</span>
+    {% for category in categories %}
+    <a href="{% url 'mainsite:category_detail' category.slug %}" class="group border border-gray-300 rounded flex flex-col items-center justify-center h-36 p-4 hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-300 shadow-sm">
+      {% if category.image %}
+        <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-10 h-10 object-contain mb-3 group-hover:brightness-200 transition-all">
+      {% else %}
+        <svg class="w-10 h-10 text-black group-hover:text-white transition-colors duration-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+      {% endif %}
+      <span class="text-sm font-medium text-black group-hover:text-white transition-colors duration-300">{{ category.name }}</span>
     </a>
-
-    <!-- Category 2: Computers -->
-    <a href="#" class="group border border-gray-300 rounded flex flex-col items-center justify-center h-36 p-4 hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-300 shadow-sm">
-      <svg class="w-10 h-10 text-black group-hover:text-white transition-colors duration-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
-      <span class="text-sm font-medium text-black group-hover:text-white transition-colors duration-300">Computers</span>
-    </a>
-
-    <!-- Category 3: SmartWatch -->
-    <a href="#" class="group border border-gray-300 rounded flex flex-col items-center justify-center h-36 p-4 hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-300 shadow-sm">
-      <svg class="w-10 h-10 text-black group-hover:text-white transition-colors duration-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 2h6v3H9V2zm0 17h6v3H9v-3z" />
-      </svg>
-      <span class="text-sm font-medium text-black group-hover:text-white transition-colors duration-300">SmartWatch</span>
-    </a>
-
-    <!-- Category 4: Camera (Active / Featured State) -->
-    <a href="#" class="bg-red-500 border border-red-500 rounded flex flex-col items-center justify-center h-36 p-4 text-white shadow-md transition-all duration-300">
-      <svg class="w-10 h-10 text-white mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-      <span class="text-sm font-medium text-white">Camera</span>
-    </a>
-
-    <!-- Category 5: HeadPhones -->
-    <a href="#" class="group border border-gray-300 rounded flex flex-col items-center justify-center h-36 p-4 hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-300 shadow-sm">
-      <svg class="w-10 h-10 text-black group-hover:text-white transition-colors duration-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 00-14 0m0 0v6a2 2 0 002 2h2a2 2 0 002-2v-4a2 2 0 00-2-2H5zm14 0v6a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
-      </svg>
-      <span class="text-sm font-medium text-black group-hover:text-white transition-colors duration-300">HeadPhones</span>
-    </a>
-
-    <!-- Category 6: Gaming -->
-    <a href="#" class="group border border-gray-300 rounded flex flex-col items-center justify-center h-36 p-4 hover:bg-red-500 hover:border-red-500 hover:text-white transition-all duration-300 shadow-sm">
-      <svg class="w-10 h-10 text-black group-hover:text-white transition-colors duration-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 6h.01M18 9h.01M18 15h.01M15 18h.01M6 9h4M8 7v4" />
-      </svg>
-      <span class="text-sm font-medium text-black group-hover:text-white transition-colors duration-300">Gaming</span>
-    </a>
-
+    {% empty %}
+      <p class="text-gray-500 col-span-full">No categories found.</p>
+    {% endfor %}
   </div>
 
-  <!-- Bottom Horizontal Border Line -->
   <div class="border-b border-gray-200 mt-16"></div>
 </section>
 
+<!-- BEST SELLING PRODUCTS SECTION -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-  
-  <!-- Section Header -->
   <div class="flex items-end justify-between mb-10">
     <div>
-      <!-- Subtitle Tag Badge -->
       <div class="flex items-center space-x-3 mb-3">
         <div class="w-5 h-10 bg-red-500 rounded-sm"></div>
         <span class="text-red-500 font-semibold text-sm">This Month</span>
       </div>
-      <!-- Main Title -->
       <h2 class="text-3xl sm:text-4xl font-bold tracking-wider text-black">
         Best Selling Products
       </h2>
     </div>
 
-    <!-- "View All" Button -->
-    <a href="#" class="bg-red-500 hover:bg-red-600 text-white font-medium px-8 py-3 rounded transition-colors text-sm sm:text-base">
+    <a href="{% url 'mainsite:categories' %}" class="bg-red-500 hover:bg-red-600 text-white font-medium px-8 py-3 rounded transition-colors text-sm sm:text-base">
       View All
     </a>
   </div>
 
-  <!-- Product Grid -->
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
-    <!-- Card 1: The North Coat -->
+    {% for product in best_selling_products %}
     <div class="group relative flex flex-col justify-between">
       <div>
-        <!-- Image Box -->
         <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
           
-          <!-- Action Buttons (Wishlist & Quick View) -->
+          {% if product.badge %}
+          <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-2.5 py-1 rounded">
+            {{ product.badge }}
+          </span>
+          {% endif %}
+
           <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
+             <button 
+                  type="button" 
+                  class="add-to-wishlist-btn w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors focus:outline-none" 
+                  data-url="{% url 'mainsite:add_to_wishlist' product.id %}"
+                  aria-label="Add to Wishlist">
+                  <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </button>
+
+            <a href="{% url 'mainsite:product_detail' product.slug %}" class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            </button>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg></a>
           </div>
 
-          <!-- Image -->
-          <img 
-            src="{% static 'images/north-coat.png' %}" 
-            alt="The north coat" 
-            class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300"
-          >
-
-          <!-- Add to Cart Hover Overlay -->
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2.5 text-sm font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2 hover:bg-red-500">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-              </svg>
-              <span>Add To Cart</span>
-            </button>
-          </form>
+          <a href="{% url 'mainsite:product_detail' product.slug %}" class="flex justify-center items-center h-full">
+            <img  src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/north-coat.png' %}{% endif %}" alt="{{ product.name }}" class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300"></a>
         </div>
 
-        <!-- Product Info -->
-        <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-base text-gray-900 group-hover:text-red-500 transition-colors">The north coat</h3>
-          <div class="flex items-center space-x-3 text-sm">
-            <span class="text-red-500 font-semibold">$260</span>
-            <span class="text-gray-400 line-through">$360</span>
-          </div>
-
-          <!-- Star Rating -->
-          <div class="flex items-center space-x-1 pt-1">
-            <div class="flex text-amber-400">
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+          <!-- Add to Cart Button -->
+            <div>
+              <button 
+                type="button" 
+                class="add-to-cart-btn w-full bg-black text-white py-2.5 text-sm font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 duration-300 flex items-center justify-center space-x-2 hover:bg-red-500 transition-colors cursor-pointer"
+                data-product-id="{{ product.id }}"
+                data-url="{% url 'mainsite:add_to_cart' product.id %}">
+                Add to Cart
+              </button>
             </div>
-            <span class="text-xs font-semibold text-gray-500 ml-1">(65)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 2: Gucci Duffle Bag -->
-    <div class="group relative flex flex-col justify-between">
-      <div>
-        <!-- Image Box -->
-        <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
-          
-          <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            </button>
-          </div>
-
-          <img 
-            src="{% static 'images/gucci-bag.png' %}" 
-            alt="Gucci duffle bag" 
-            class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300"
-          >
-
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2.5 text-sm font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2 hover:bg-red-500">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-              </svg>
-              <span>Add To Cart</span>
-            </button>
-          </form>
-        </div>
 
         <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-base text-gray-900 group-hover:text-red-500 transition-colors">Gucci duffle bag</h3>
+          <a href="{% url 'mainsite:product_detail' product.slug %}">
+            <h3 class="font-semibold text-base text-gray-900 group-hover:text-red-500 transition-colors">{{ product.name }}</h3>
+          </a>
           <div class="flex items-center space-x-3 text-sm">
-            <span class="text-red-500 font-semibold">$960</span>
-            <span class="text-gray-400 line-through">$1160</span>
+            {% if product.discount_price %}
+              <span class="text-red-500 font-semibold">${{ product.discount_price }}</span>
+              <span class="text-gray-400 line-through">${{ product.price }}</span>
+            {% else %}
+              <span class="text-red-500 font-semibold">${{ product.price }}</span>
+            {% endif %}
           </div>
 
           <div class="flex items-center space-x-1 pt-1">
@@ -462,127 +351,14 @@
               <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
               <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
             </div>
-            <span class="text-xs font-semibold text-gray-500 ml-1">(65)</span>
+            <span class="text-xs font-semibold text-gray-500 ml-1">({{ product.review_count }})</span>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Card 3: RGB Liquid CPU Cooler -->
-    <div class="group relative flex flex-col justify-between">
-      <div>
-        <!-- Image Box -->
-        <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
-          
-          <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            </button>
-          </div>
-
-          <img 
-            src="{% static 'images/cpu-cooler.png' %}" 
-            alt="RGB liquid CPU Cooler" 
-            class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300"
-          >
-
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2.5 text-sm font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2 hover:bg-red-500">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-              </svg>
-              <span>Add To Cart</span>
-            </button>
-          </form>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-base text-gray-900 group-hover:text-red-500 transition-colors">RGB liquid CPU Cooler</h3>
-          <div class="flex items-center space-x-3 text-sm">
-            <span class="text-red-500 font-semibold">$160</span>
-            <span class="text-gray-400 line-through">$170</span>
-          </div>
-
-          <div class="flex items-center space-x-1 pt-1">
-            <div class="flex text-amber-400">
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-            </div>
-            <span class="text-xs font-semibold text-gray-500 ml-1">(65)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 4: Small BookSelf -->
-    <div class="group relative flex flex-col justify-between">
-      <div>
-        <!-- Image Box -->
-        <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
-          
-          <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            </button>
-          </div>
-
-          <img 
-            src="{% static 'images/bookshelf.png' %}" 
-            alt="Small BookSelf" 
-            class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300"
-          >
-
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2.5 text-sm font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2 hover:bg-red-500">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-              </svg>
-              <span>Add To Cart</span>
-            </button>
-          </form>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-base text-gray-900 group-hover:text-red-500 transition-colors">Small BookSelf</h3>
-          <div class="flex items-center space-x-3 text-sm">
-            <span class="text-red-500 font-semibold">$360</span>
-          </div>
-
-          <div class="flex items-center space-x-1 pt-1">
-            <div class="flex text-amber-400">
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-            </div>
-            <span class="text-xs font-semibold text-gray-500 ml-1">(65)</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    {% empty %}
+      <p class="text-gray-500 col-span-full">No best selling products available right now.</p>
+    {% endfor %}
   </div>
 </section>
 
@@ -633,37 +409,23 @@
       </div>
 
       <!-- Call to Action Button -->
-      <a 
-        href="#" 
-        class="inline-block bg-[#00FF66] hover:bg-[#00E65C] text-white font-semibold px-10 py-4 rounded text-sm sm:text-base transition-colors duration-300 shadow-lg hover:shadow-green-500/20"
-      >
-        Buy Now!
-      </a>
+      <a href="#" class="inline-block bg-[#00FF66] hover:bg-[#00E65C] text-white font-semibold px-10 py-4 rounded text-sm sm:text-base transition-colors duration-300 shadow-lg hover:shadow-green-500/20">Buy Now!</a>
     </div>
 
     <!-- Right Image Column -->
     <div class="relative z-10 w-full md:w-1/2 flex items-center justify-center">
-      <img 
-        src="{% static 'image/speaker.png' %}" 
-        alt="JBL Music Speaker" 
-        class="w-full max-w-sm sm:max-w-md lg:max-w-lg object-contain filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform duration-500"
-      >
+      <img src="{% static 'image/speaker.png' %}" alt="JBL Music Speaker" class="w-full max-w-sm sm:max-w-md lg:max-w-lg object-contain filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform duration-500">
     </div>
-
   </div>
 </section>
 
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-  
-  <!-- Section Header -->
   <div class="flex items-end justify-between mb-10">
     <div>
-      <!-- Tag Badge -->
       <div class="flex items-center space-x-3 mb-3">
         <div class="w-5 h-10 bg-red-500 rounded-sm"></div>
         <span class="text-red-500 font-semibold text-sm">Our Products</span>
       </div>
-      <!-- Main Title -->
       <h2 class="text-3xl sm:text-4xl font-bold tracking-wider text-black">
         Explore Our Products
       </h2>
@@ -684,489 +446,151 @@
     </div>
   </div>
 
-  <!-- Product Grid (2 Rows, 4 Columns on desktop) -->
-  <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-
-    <!-- Card 1: Breed Dry Dog Food -->
+  <!-- Product Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    {% for product in explore_our_products %}
     <div class="group relative flex flex-col justify-between">
       <div>
-        <!-- Image Container -->
         <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
           
-          <!-- Top Right Action Icons -->
+          {% if product.badge %}
+          <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-2.5 py-1 rounded">
+            {{ product.badge }}
+          </span>
+          {% endif %}
+
           <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
+            <button 
+                  type="button" 
+                  class="add-to-wishlist-btn w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors focus:outline-none" 
+                  data-url="{% url 'mainsite:add_to_wishlist' product.id %}"
+                  aria-label="Add to Wishlist">
+                  <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </button>
+
+            <a href="{% url 'mainsite:product_detail' product.slug %}" class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            </button>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+            </a>
           </div>
 
-          <img src="{% static 'images/dog-food.png' %}" alt="Breed Dry Dog Food" class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300">
-
-          <!-- Add to Cart (Visible on mobile/tablet, hover on LG+) -->
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2 text-xs font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-500">
-              Add To Cart
-            </button>
-          </form>
+          <a href="{% url 'mainsite:product_detail' product.slug %}" class="flex justify-center items-center h-full">
+            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/north-coat.png' %}{% endif %}" alt="{{ product.name }}" class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300"></a>
         </div>
 
-        <!-- Product Details -->
-        <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-sm text-gray-900 group-hover:text-red-500 transition-colors">Breed Dry Dog Food</h3>
-          <div class="flex items-center space-x-2">
-            <span class="text-red-500 font-semibold text-sm">$100</span>
-            
-            <!-- Dynamic Rating Stars -->
-            <div class="flex text-amber-400 text-xs items-center">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <span class="text-xs font-semibold text-gray-500 ml-1.5">(35)</span>
+           <!-- Add to Cart Button  -->
+            <div>
+              <button 
+                type="button" 
+                class="add-to-cart-btn w-full bg-black text-white py-2.5 text-sm font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 duration-300 flex items-center justify-center space-x-2 hover:bg-red-500 transition-colors cursor-pointer"
+                data-product-id="{{ product.id }}"
+                data-url="{% url 'mainsite:add_to_cart' product.id %}">
+                Add to Cart
+              </button>
             </div>
+
+        <div class="mt-4 space-y-1">
+          <a href="{% url 'mainsite:product_detail' product.slug %}">
+            <h3 class="font-semibold text-base text-gray-900 group-hover:text-red-500 transition-colors">{{ product.name }}</h3>
+          </a>
+          <div class="flex items-center space-x-3 text-sm">
+            {% if product.discount_price %}
+              <span class="text-red-500 font-semibold">${{ product.discount_price }}</span>
+              <span class="text-gray-400 line-through">${{ product.price }}</span>
+            {% else %}
+              <span class="text-red-500 font-semibold">${{ product.price }}</span>
+            {% endif %}
+          </div>
+
+          <div class="flex items-center space-x-1 pt-1">
+            <div class="flex text-amber-400">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-gray-500 ml-1">({{ product.review_count }})</span>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Card 2: CANON EOS DSLR Camera -->
-    <div class="group relative flex flex-col justify-between">
-      <div>
-        <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
-          <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-            </button>
-          </div>
-
-          <img src="{% static 'images/canon-camera.png' %}" alt="CANON EOS DSLR Camera" class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300">
-
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2 text-xs font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-500">
-              Add To Cart
-            </button>
-          </form>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-sm text-gray-900 group-hover:text-red-500 transition-colors">CANON EOS DSLR Camera</h3>
-          <div class="flex items-center space-x-2">
-            <span class="text-red-500 font-semibold text-sm">$360</span>
-            <div class="flex text-amber-400 text-xs items-center">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <span class="text-xs font-semibold text-gray-500 ml-1.5">(95)</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 3: ASUS FHD Gaming Laptop -->
-    <div class="group relative flex flex-col justify-between">
-      <div>
-        <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
-          <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-            </button>
-          </div>
-
-          <img src="{% static 'images/asus-laptop.png' %}" alt="ASUS FHD Gaming Laptop" class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300">
-
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2 text-xs font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-500">
-              Add To Cart
-            </button>
-          </form>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-sm text-gray-900 group-hover:text-red-500 transition-colors">ASUS FHD Gaming Laptop</h3>
-          <div class="flex items-center space-x-2">
-            <span class="text-red-500 font-semibold text-sm">$700</span>
-            <div class="flex text-amber-400 text-xs items-center">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <span class="text-xs font-semibold text-gray-500 ml-1.5">(325)</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 4: Curology Product Set -->
-    <div class="group relative flex flex-col justify-between">
-      <div>
-        <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
-          <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-            </button>
-          </div>
-
-          <img src="{% static 'images/curology-set.png' %}" alt="Curology Product Set" class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300">
-
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2 text-xs font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-500">
-              Add To Cart
-            </button>
-          </form>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-sm text-gray-900 group-hover:text-red-500 transition-colors">Curology Product Set</h3>
-          <div class="flex items-center space-x-2">
-            <span class="text-red-500 font-semibold text-sm">$500</span>
-            <div class="flex text-amber-400 text-xs items-center">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 text-gray-300 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <span class="text-xs font-semibold text-gray-500 ml-1.5">(145)</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 5: Kids Electric Car (With NEW Badge & Swatches) -->
-    <div class="group relative flex flex-col justify-between">
-      <div>
-        <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
-          
-          <!-- NEW Badge -->
-          <span class="absolute top-3 left-3 bg-[#00FF66] text-white text-[10px] font-bold px-2.5 py-1 rounded">NEW</span>
-
-          <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-            </button>
-          </div>
-
-          <img src="{% static 'images/kids-car.png' %}" alt="Kids Electric Car" class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300">
-
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2 text-xs font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-500">
-              Add To Cart
-            </button>
-          </form>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-sm text-gray-900 group-hover:text-red-500 transition-colors">Kids Electric Car</h3>
-          <div class="flex items-center space-x-2">
-            <span class="text-red-500 font-semibold text-sm">$960</span>
-            <div class="flex text-amber-400 text-xs items-center">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <span class="text-xs font-semibold text-gray-500 ml-1.5">(65)</span>
-            </div>
-          </div>
-          <!-- Color Swatches -->
-          <div class="flex items-center space-x-2 pt-1">
-            <span class="w-4 h-4 rounded-full bg-red-500 ring-2 ring-black ring-offset-1"></span>
-            <span class="w-4 h-4 rounded-full bg-red-600"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 6: Jr. Zoom Soccer Cleats -->
-    <div class="group relative flex flex-col justify-between">
-      <div>
-        <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
-          <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-            </button>
-          </div>
-
-          <img src="{% static 'images/soccer-cleats.png' %}" alt="Jr. Zoom Soccer Cleats" class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300">
-
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2 text-xs font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-500">
-              Add To Cart
-            </button>
-          </form>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-sm text-gray-900 group-hover:text-red-500 transition-colors">Jr. Zoom Soccer Cleats</h3>
-          <div class="flex items-center space-x-2">
-            <span class="text-red-500 font-semibold text-sm">$1160</span>
-            <div class="flex text-amber-400 text-xs items-center">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <span class="text-xs font-semibold text-gray-500 ml-1.5">(35)</span>
-            </div>
-          </div>
-          <!-- Color Swatches -->
-          <div class="flex items-center space-x-2 pt-1">
-            <span class="w-4 h-4 rounded-full bg-yellow-300 ring-2 ring-black ring-offset-1"></span>
-            <span class="w-4 h-4 rounded-full bg-red-500"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 7: GP11 Shooter USB Gamepad (With NEW Badge & Swatches) -->
-    <div class="group relative flex flex-col justify-between">
-      <div>
-        <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
-          
-          <span class="absolute top-3 left-3 bg-[#00FF66] text-white text-[10px] font-bold px-2.5 py-1 rounded">NEW</span>
-
-          <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-            </button>
-          </div>
-
-          <img src="{% static 'images/gamepad.png' %}" alt="GP11 Shooter USB Gamepad" class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300">
-
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2 text-xs font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-500">
-              Add To Cart
-            </button>
-          </form>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-sm text-gray-900 group-hover:text-red-500 transition-colors">GP11 Shooter USB Gamepad</h3>
-          <div class="flex items-center space-x-2">
-            <span class="text-red-500 font-semibold text-sm">$660</span>
-            <div class="flex text-amber-400 text-xs items-center">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <span class="text-xs font-semibold text-gray-500 ml-1.5">(55)</span>
-            </div>
-          </div>
-          <!-- Color Swatches -->
-          <div class="flex items-center space-x-2 pt-1">
-            <span class="w-4 h-4 rounded-full bg-black ring-2 ring-black ring-offset-1"></span>
-            <span class="w-4 h-4 rounded-full bg-red-500"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 8: Quilted Satin Jacket -->
-    <div class="group relative flex flex-col justify-between">
-      <div>
-        <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
-          <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-            </button>
-            <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-            </button>
-          </div>
-
-          <img src="{% static 'images/satin-jacket.png' %}" alt="Quilted Satin Jacket" class="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300">
-
-          <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-            {% csrf_token %}
-            <button type="submit" class="w-full bg-black text-white py-2 text-xs font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-500">
-              Add To Cart
-            </button>
-          </form>
-        </div>
-
-        <div class="mt-4 space-y-1">
-          <h3 class="font-semibold text-sm text-gray-900 group-hover:text-red-500 transition-colors">Quilted Satin Jacket</h3>
-          <div class="flex items-center space-x-2">
-            <span class="text-red-500 font-semibold text-sm">$660</span>
-            <div class="flex text-amber-400 text-xs items-center">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-              <span class="text-xs font-semibold text-gray-500 ml-1.5">(55)</span>
-            </div>
-          </div>
-          <!-- Color Swatches -->
-          <div class="flex items-center space-x-2 pt-1">
-            <span class="w-4 h-4 rounded-full bg-emerald-900 ring-2 ring-black ring-offset-1"></span>
-            <span class="w-4 h-4 rounded-full bg-red-500"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    {% empty %}
+      <p class="text-gray-500 col-span-full">No best selling products available right now.</p>
+    {% endfor %}
   </div>
 
   <!-- Bottom CTA Center Button -->
   <div class="flex justify-center mt-12">
-    <a href="#" class="bg-red-500 hover:bg-red-600 text-white font-medium px-10 py-3.5 rounded transition-colors text-sm sm:text-base shadow-sm">
-      View All Products
-    </a>
+    <a href="{% url 'mainsite:categories' %}" class="bg-red-500 hover:bg-red-600 text-white font-medium px-10 py-3.5 rounded transition-colors text-sm sm:text-base shadow-sm">View All Products</a>
   </div>
 
 </section>
 
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-  
-  <!-- Header Tag & Title -->
   <div class="mb-10">
     <div class="flex items-center space-x-3 mb-3">
       <div class="w-5 h-10 bg-red-500 rounded-sm"></div>
       <span class="text-red-500 font-semibold text-sm">Featured</span>
     </div>
-    <h2 class="text-3xl sm:text-4xl font-bold tracking-wider text-black">
-      New Arrival
-    </h2>
+    <h2 class="text-3xl sm:text-4xl font-bold tracking-wider text-black">New Arrival</h2>
   </div>
 
   <!-- Main Grid Layout -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
     <!-- Left Column: PlayStation 5 Card (Full Height) -->
     <div class="relative bg-black rounded overflow-hidden min-h-125 lg:min-h-150 flex items-end p-8 group">
-      <!-- Image Asset -->
-      <img 
-        src="{% static 'image/ps.png' %}" 
-        alt="PlayStation 5" 
-        class="absolute inset-0 w-full h-full object-contain object-bottom p-6 transition-transform duration-300 group-hover:scale-105"
-      >
+      <img src="{% static 'image/ps.png' %}" alt="PlayStation 5" class="absolute inset-0 w-full h-full object-contain object-bottom p-6 transition-transform duration-300 group-hover:scale-105">
       <!-- Gradient overlay for better mobile/image text readability -->
       <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
-
       <!-- Text Content Overlay -->
       <div class="relative z-10 max-w-xs space-y-2">
         <h3 class="text-2xl font-bold text-white tracking-wide">PlayStation 5</h3>
-        <p class="text-gray-300 text-xs sm:text-sm leading-relaxed">
-          Black and White version of the PS5 coming out on sale.
-        </p>
-        <a 
-          href="#" 
-          class="inline-block text-white font-medium underline underline-offset-8 hover:text-red-500 transition-colors pt-2"
-        >
-          Shop Now
-        </a>
+        <p class="text-gray-300 text-xs sm:text-sm leading-relaxed"> Black and White version of the PS5 coming out on sale.</p>
+        <a href="#" class="inline-block text-white font-medium underline underline-offset-8 hover:text-red-500 transition-colors pt-2">Shop Now</a>
       </div>
     </div>
 
     <!-- Right Column Layout (Top Horizontal Card + Bottom 2 Grid Cards) -->
     <div class="flex flex-col gap-8">
-
       <!-- Top Right Card: Women's Collections -->
       <div class="relative bg-[#0d0d0d] rounded overflow-hidden min-h-70 flex items-end p-6 sm:p-8 group flex-1">
-        <img 
-          src="{% static 'image/woman.png' %}" 
-          alt="Women's Collections" 
-          class="absolute right-0 bottom-0 h-full object-contain object-right transition-transform duration-300 group-hover:scale-105"
-        >
+        <img src="{% static 'image/woman.png' %}" alt="Women's Collections" class="absolute right-0 bottom-0 h-full object-contain object-right transition-transform duration-300 group-hover:scale-105">
         <div class="absolute inset-0 bg-linear-to-r from-black/80 via-black/30 to-transparent pointer-events-none"></div>
 
         <div class="relative z-10 max-w-xs space-y-2">
-          <h3 class="text-2xl font-bold text-white tracking-wide">Women’s Collections</h3>
-          <p class="text-gray-300 text-xs sm:text-sm leading-relaxed">
-            Featured woman collections that give you another vibe.
-          </p>
-          <a 
-            href="#" 
-            class="inline-block text-white font-medium underline underline-offset-8 hover:text-red-500 transition-colors pt-2"
-          >
-            Shop Now
-          </a>
+          <h3 class="text-2xl font-bold text-white tracking-wide">Women's Collections</h3>
+          <p class="text-gray-300 text-xs sm:text-sm leading-relaxed">Featured woman collections that give you another vibe.</p>
+          <a href="#" class="inline-block text-white font-medium underline underline-offset-8 hover:text-red-500 transition-colors pt-2">Shop Now</a>
         </div>
       </div>
 
       <!-- Bottom Right 2-Column Split Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 flex-1">
-
         <!-- Card 1: Speakers -->
         <div class="relative bg-[#0d0d0d] rounded overflow-hidden min-h-70 flex items-end p-6 group">
-          <img 
-            src="{% static 'images/speakers.png' %}" 
-            alt="Speakers" 
-            class="absolute inset-0 w-full h-full object-contain p-8 transition-transform duration-300 group-hover:scale-105"
-          >
+          <img src="{% static 'images/speakers.png' %}" alt="Speakers" class="absolute inset-0 w-full h-full object-contain p-8 transition-transform duration-300 group-hover:scale-105">
           <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent pointer-events-none"></div>
 
           <div class="relative z-10 space-y-1">
             <h3 class="text-xl font-bold text-white tracking-wide">Speakers</h3>
             <p class="text-gray-300 text-xs">Amazon wireless speakers</p>
-            <a 
-              href="#" 
-              class="inline-block text-white font-medium underline underline-offset-8 hover:text-red-500 transition-colors pt-2"
-            >
-              Shop Now
-            </a>
+            <a href="#" class="inline-block text-white font-medium underline underline-offset-8 hover:text-red-500 transition-colors pt-2"> Shop Now</a>
           </div>
         </div>
 
         <!-- Card 2: Perfume -->
         <div class="relative bg-[#0d0d0d] rounded overflow-hidden min-h-70 flex items-end p-6 group">
-          <img 
-            src="{% static 'image/gucciperfume.png' %}" 
-            alt="Perfume" 
-            class="absolute inset-0 w-full h-full object-contain p-8 transition-transform duration-300 group-hover:scale-105"
-          >
+          <img src="{% static 'image/gucciperfume.png' %}" alt="Perfume" class="absolute inset-0 w-full h-full object-contain p-8 transition-transform duration-300 group-hover:scale-105">
           <div class="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent pointer-events-none"></div>
 
           <div class="relative z-10 space-y-1">
             <h3 class="text-xl font-bold text-white tracking-wide">Perfume</h3>
             <p class="text-gray-300 text-xs">GUCCI INTENSE OUD EDP</p>
-            <a 
-              href="#" 
-              class="inline-block text-white font-medium underline underline-offset-8 hover:text-red-500 transition-colors pt-2"
-            >
-              Shop Now
-            </a>
+            <a href="#" class="inline-block text-white font-medium underline underline-offset-8 hover:text-red-500 transition-colors pt-2">Shop Now</a>
           </div>
         </div>
       </div>
@@ -1176,29 +600,17 @@
 </section>
 
 <section class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-  
   <!-- Services / Features Grid -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 text-center max-w-5xl mx-auto">
-    
-    <!-- Service 1: Free and Fast Delivery -->
     <div class="flex flex-col items-center space-y-4">
-      <!-- Concentric Circle Icon Container -->
       <div class="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center">
         <div class="w-14 h-14 rounded-full bg-black flex items-center justify-center text-white">
-          <!-- Delivery Truck Icon -->
-          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 17a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4zM3 4h10v11H3V4zm10 3h4.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0122 11.828V15h-2M3 15h2m8 0h2" />
-          </svg>
+          <img src="{% static 'image/services.png' %}" alt="Delivery Truck Icon">
         </div>
       </div>
-      <!-- Text Description -->
       <div class="space-y-1">
-        <h3 class="font-bold text-base sm:text-lg tracking-wide text-black uppercase">
-          Free and Fast Delivery
-        </h3>
-        <p class="text-xs sm:text-sm text-gray-600">
-          Free delivery for all orders over $140
-        </p>
+        <h3 class="font-bold text-base sm:text-lg tracking-wide text-black uppercase">Free and Fast Delivery</h3>
+        <p class="text-xs sm:text-sm text-gray-600">Free delivery for all orders over $140 </p>
       </div>
     </div>
 
@@ -1206,19 +618,12 @@
     <div class="flex flex-col items-center space-y-4">
       <div class="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center">
         <div class="w-14 h-14 rounded-full bg-black flex items-center justify-center text-white">
-          <!-- Headset Icon -->
-          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m-4 0h8M3 11a9 9 0 0118 0v3a3 3 0 01-3 3h-1a1 1 0 01-1-1v-4a1 1 0 011-1h3m-16 3a3 3 0 003 3h1a1 1 0 001-1v-4a1 1 0 00-1-1H4a1 1 0 00-1 1v2z" />
-          </svg>
+          <img src="{% static 'image/services (1).png' %}" alt="Headset Icon">
         </div>
       </div>
       <div class="space-y-1">
-        <h3 class="font-bold text-base sm:text-lg tracking-wide text-black uppercase">
-          24/7 Customer Service
-        </h3>
-        <p class="text-xs sm:text-sm text-gray-600">
-          Friendly 24/7 customer support
-        </p>
+        <h3 class="font-bold text-base sm:text-lg tracking-wide text-black uppercase">24/7 Customer Service </h3>
+        <p class="text-xs sm:text-sm text-gray-600">Friendly 24/7 customer support</p>
       </div>
     </div>
 
@@ -1226,24 +631,15 @@
     <div class="flex flex-col items-center space-y-4">
       <div class="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center">
         <div class="w-14 h-14 rounded-full bg-black flex items-center justify-center text-white">
-          <!-- Shield Check Icon -->
-          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
+          <img src="{% static 'image/services (2).png' %}" alt="Shield Check Icon">
         </div>
       </div>
       <div class="space-y-1">
-        <h3 class="font-bold text-base sm:text-lg tracking-wide text-black uppercase">
-          Money Back Guarantee
-        </h3>
-        <p class="text-xs sm:text-sm text-gray-600">
-          We return money within 30 days
-        </p>
+        <h3 class="font-bold text-base sm:text-lg tracking-wide text-black uppercase">Money Back Guarantee</h3>
+        <p class="text-xs sm:text-sm text-gray-600"> We return money within 30 days</p>
       </div>
     </div>
-
   </div>
-
-
 </section>
+
 {% endblock content %}

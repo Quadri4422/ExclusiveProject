@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    contact - Exclusive101
+    Contact - Exclusive101
 {% endblock title %}
 
 {% block content %}
@@ -10,10 +10,21 @@
   
   <!-- Breadcrumb Navigation -->
   <nav class="text-xs sm:text-sm text-gray-400 flex items-center space-x-2">
-    <a href="#" class="hover:text-black transition-colors">Home</a>
+    <a href="{% url 'mainsite:index' %}" class="hover:text-black transition-colors">Home</a>
     <span>/</span>
     <span class="text-black font-medium">Contact</span>
   </nav>
+
+  <!-- Django Messages Alert Banner -->
+  {% if messages %}
+    <div class="space-y-2">
+      {% for message in messages %}
+        <div class="p-4 rounded text-xs sm:text-sm {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-200{% else %}bg-red-50 text-red-800 border border-red-200{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
 
   <!-- Contact Container Grid -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -69,7 +80,7 @@
 
     <!-- Right Column: Contact Form -->
     <div class="lg:col-span-8 bg-white rounded shadow-sm p-8 border border-gray-100">
-      <form action="#" method="POST" class="space-y-8">
+      <form action="{% url 'mainsite:contact' %}" method="POST" class="space-y-8">
         {% csrf_token %}
 
         <!-- Input Fields Row -->

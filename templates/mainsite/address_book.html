@@ -1,0 +1,82 @@
+{% extends '../shared/layout.html' %}
+{% block title %}Address Book - Exclusive101{% endblock %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-10">
+  
+  {% if messages %}
+    <div class="space-y-2">
+      {% for message in messages %}
+        <div class="p-4 text-xs rounded border {% if message.tags == 'error' %}bg-red-50 text-red-700 border-red-200{% else %}bg-green-50 text-green-700 border-green-200{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- Sidebar Component -->
+    <div class="lg:col-span-3">
+      {% include 'shared/account_sidebar.html' with active_tab='address_book' %}
+    </div>
+
+    <!-- Main Address Content -->
+    <div class="lg:col-span-9 space-y-8">
+      
+      <!-- Saved Addresses List -->
+      <div class="bg-white rounded shadow-sm p-6 border border-gray-100 space-y-4">
+        <h2 class="text-lg font-medium text-black">Saved Addresses</h2>
+        
+        {% if addresses %}
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for addr in addresses %}
+              <div class="p-4 border rounded relative bg-[#F5F5F5] text-xs space-y-1">
+                {% if addr.is_default %}
+                  <span class="absolute top-2 right-2 bg-[#DB4444] text-white px-2 py-0.5 rounded text-[10px]">Default</span>
+                {% endif %}
+                <p class="font-medium text-black">{{ addr.full_name }}</p>
+                <p class="text-gray-600">{{ addr.street_address }}, {{ addr.city }}, {{ addr.state }} {{ addr.postal_code }}</p>
+                <p class="text-gray-600">{{ addr.country }}</p>
+                <p class="text-gray-600">Phone: {{ addr.phone }}</p>
+                
+                <form action="{% url 'mainsite:delete_address' addr.id %}" method="POST" class="pt-2">
+                  {% csrf_token %}
+                  <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                </form>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-xs text-gray-500">No saved addresses found.</p>
+        {% endif %}
+      </div>
+
+      <!-- Add New Address Form -->
+      <div class="bg-white rounded shadow-sm p-6 border border-gray-100">
+        <h2 class="text-lg font-medium text-[#DB4444] mb-6">Add New Address</h2>
+        <form action="{% url 'mainsite:address_book' %}" method="POST" class="space-y-4 text-xs">
+          {% csrf_token %}
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" name="full_name" placeholder="Full Name" required class="w-full bg-[#F5F5F5] rounded px-4 py-3 focus:outline-none">
+            <input type="text" name="phone" placeholder="Phone Number" required class="w-full bg-[#F5F5F5] rounded px-4 py-3 focus:outline-none">
+            <input type="text" name="street_address" placeholder="Street Address" required class="w-full bg-[#F5F5F5] rounded px-4 py-3 focus:outline-none">
+            <input type="text" name="city" placeholder="City" required class="w-full bg-[#F5F5F5] rounded px-4 py-3 focus:outline-none">
+            <input type="text" name="state" placeholder="State/Province" required class="w-full bg-[#F5F5F5] rounded px-4 py-3 focus:outline-none">
+            <input type="text" name="postal_code" placeholder="Postal / ZIP Code" required class="w-full bg-[#F5F5F5] rounded px-4 py-3 focus:outline-none">
+            <input type="text" name="country" placeholder="Country" required class="w-full bg-[#F5F5F5] rounded px-4 py-3 focus:outline-none md:col-span-2">
+          </div>
+          
+          <div class="flex items-center space-x-2 pt-2">
+            <input type="checkbox" name="is_default" id="is_default" class="rounded">
+            <label for="is_default" class="text-gray-700">Set as default address</label>
+          </div>
+          
+          <button type="submit" class="px-8 py-3 bg-[#DB4444] text-white rounded font-medium hover:bg-red-600 transition-colors">Save Address</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

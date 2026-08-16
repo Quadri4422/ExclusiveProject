@@ -1,0 +1,66 @@
+{% extends '../shared/layout.html' %}
+{% block title %}My Returns - Exclusive101{% endblock %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-10">
+  {% if messages %}
+    <div class="space-y-2">
+      {% for message in messages %}
+        <div class="p-4 text-xs rounded border {% if message.tags == 'error' %}bg-red-50 text-red-700 border-red-200{% else %}bg-green-50 text-green-700 border-green-200{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    {% include '../shared/account_sidebar.html' %}
+
+    <div class="lg:col-span-9 space-y-8">
+      <!-- Request Return Form -->
+      <div class="bg-white rounded shadow-sm p-6 border border-gray-100">
+        <h2 class="text-lg font-medium text-[#DB4444] mb-4">Request an Order Return</h2>
+        <form action="{% url 'mainsite:returns' %}" method="POST" class="space-y-4 text-xs">
+          {% csrf_token %}
+          <input type="text" name="order_number" placeholder="Order Number (e.g. #ORD-10923)" required class="w-full bg-[#F5F5F5] rounded px-4 py-3 focus:outline-none">
+          <textarea name="reason" rows="3" placeholder="Reason for return..." required class="w-full bg-[#F5F5F5] rounded px-4 py-3 focus:outline-none"></textarea>
+          <button type="submit" class="px-8 py-3 bg-[#DB4444] text-white rounded font-medium hover:bg-red-600">Submit Return Request</button>
+        </form>
+      </div>
+
+      <!-- History Table -->
+      <div class="bg-white rounded shadow-sm p-6 border border-gray-100 space-y-4">
+        <h2 class="text-lg font-medium text-black">Return Requests History</h2>
+        {% if returns %}
+          <div class="overflow-x-auto text-xs">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b text-gray-500">
+                  <th class="py-2">Order #</th>
+                  <th class="py-2">Reason</th>
+                  <th class="py-2">Status</th>
+                  <th class="py-2">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in returns %}
+                  <tr class="border-b">
+                    <td class="py-3 font-medium">{{ item.order_number }}</td>
+                    <td class="py-3 text-gray-600">{{ item.reason }}</td>
+                    <td class="py-3">
+                      <span class="px-2 py-1 rounded text-[10px] bg-yellow-100 text-yellow-800">{{ item.get_status_display }}</span>
+                    </td>
+                    <td class="py-3 text-gray-500">{{ item.created_at|date:"M d, Y" }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="text-xs text-gray-500">No return requests found.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

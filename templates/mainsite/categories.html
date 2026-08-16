@@ -2,143 +2,243 @@
 {% load static %}
 
 {% block title %}
-    categories - Exclusive101
+  {% if selected_category_obj %}{{ selected_category_obj.name }}{% else %}Categories{% endif %} - Exclusive101
 {% endblock title %}
 
-
 {% block content %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" x-data="{ showFilters: true }">
 
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+  <!-- Top Bar (Header Title, Count, Hide Filters & Sort By) -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-gray-200 mb-6 gap-4">
+    <!-- Category Title & Product Count -->
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+        {% if selected_category_obj %}
+          {{ selected_category_obj.name }}
+        {% else %}
+          All Products
+        {% endif %}
+        <span class="text-gray-500 font-normal text-lg">({{ products.count }})</span>
+      </h1>
+    </div>
+
+    <!-- Filter & Sort Controls -->
+    <div class="flex items-center space-x-6 text-sm font-medium text-gray-700">
+      <!-- Hide/Show Filters Toggle -->
+      <button 
+        @click="showFilters = !showFilters" 
+        class="hidden lg:flex items-center gap-2 hover:text-red-500 transition-colors focus:outline-none"
+        type="button">
+        <span x-text="showFilters ? 'Hide Filters' : 'Show Filters'">Hide Filters</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 010 4m-6 8a2 2 0 100-4m0 4a2 2 0 010-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 010-4m0 4v2m0-6V4"/>
+        </svg>
+      </button>
+
+      <!-- Sort By Dropdown -->
+      <form method="GET" class="flex items-center gap-2">
+        <label for="sort" class="text-gray-600">Sort By:</label>
+        <select 
+          name="sort" 
+          id="sort" 
+          onchange="this.form.submit()" 
+          class="border-none bg-transparent font-semibold text-gray-900 focus:ring-0 cursor-pointer pr-8 py-1 text-sm focus:outline-none">
+          <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest</option>
+          <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+          <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+          <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Most Popular</option>
+        </select>
+      </form>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-8 items-start" :class="showFilters ? 'lg:grid-cols-4' : 'lg:grid-cols-1'">
 
     <!-- Left Sidebar: Categories Navigation -->
-    <aside class="lg:border-r border-gray-200 lg:pr-8">
-      <!-- Mobile Category Toggle Header (Optional toggle for small screens) -->
+    <aside x-show="showFilters" class="lg:border-r border-gray-200 lg:pr-8" x-transition>
       <div class="flex items-center justify-between lg:hidden mb-4 pb-2 border-b border-gray-200">
         <h2 class="font-bold text-lg text-black">Categories</h2>
         <span class="text-xs text-gray-500">Tap to explore</span>
       </div>
 
-      <!-- Categories List -->
       <ul class="space-y-4 text-sm font-medium text-black">
-        
-        <!-- Category with Submenu/Arrow -->
-        <li class="flex items-center justify-between group cursor-pointer hover:text-red-500 transition-colors">
-          <a href="#" class="flex-1">Woman's Fashion</a>
-          <svg class="w-4 h-4 text-gray-500 group-hover:text-red-500 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-          </svg>
+        <li class="flex items-center justify-between group cursor-pointer hover:text-red-500 transition-colors {% if not selected_category %}text-red-500 font-bold{% endif %}">
+          <a href="{% url 'mainsite:categories' %}" class="flex-1">All Categories</a>
         </li>
-
-        <!-- Category with Submenu/Arrow -->
-        <li class="flex items-center justify-between group cursor-pointer hover:text-red-500 transition-colors">
-          <a href="#" class="flex-1">Men's Fashion</a>
-          <svg class="w-4 h-4 text-gray-500 group-hover:text-red-500 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-          </svg>
-        </li>
-
-        <li>
-          <a href="#" class="block hover:text-red-500 transition-colors">Electronics</a>
-        </li>
-        <li>
-          <a href="#" class="block hover:text-red-500 transition-colors">Home & Lifestyle</a>
-        </li>
-        <li>
-          <a href="#" class="block hover:text-red-500 transition-colors">Medicine</a>
-        </li>
-        <li>
-          <a href="#" class="block hover:text-red-500 transition-colors">Sports & Outdoor</a>
-        </li>
-        <li>
-          <a href="#" class="block hover:text-red-500 transition-colors">Baby's & Toys</a>
-        </li>
-        <li>
-          <a href="#" class="block hover:text-red-500 transition-colors">Groceries & Pets</a>
-        </li>
-        <li>
-          <a href="#" class="block hover:text-red-500 transition-colors">Health & Beauty</a>
-        </li>
-
+        {% for category_item in categories %}
+          <li class="flex items-center justify-between group cursor-pointer hover:text-red-500 transition-colors {% if selected_category == category_item.slug %}text-red-500 font-bold{% endif %}">
+            <!-- FIXED LINK BELOW -->
+            <a href="{% url 'mainsite:category_detail' category_item.slug %}" class="flex-1">
+              {{ category_item.name }}
+            </a>
+            <svg class="w-4 h-4 text-gray-500 group-hover:text-red-500 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
+          </li>
+        {% empty %}
+          <li class="text-sm text-gray-500">No categories found.</li>
+        {% endfor %}
       </ul>
     </aside>
 
-    <!-- Right Side: Main Category Hero Banner -->
-    <div class="lg:col-span-3">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <!-- Right Side: Products Grid -->
+    <div :class="showFilters ? 'lg:col-span-3' : 'lg:col-span-4'">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" :class="showFilters ? 'lg:grid-cols-3' : 'lg:grid-cols-4'">
 
-        <!-- Item 1: HAVIT Gamepad -->
+        {% for product in products %}
         <div class="group relative flex flex-col justify-between">
           <div>
             <!-- Image Card Area -->
             <div class="relative bg-gray-100 rounded p-6 h-64 flex items-center justify-center overflow-hidden">
               
-              <!-- Discount Badge -->
-              <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-2.5 py-1 rounded">
-                -40%
-              </span>
+              {% if product.badge %}
+                <span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-2.5 py-1 rounded z-10">
+                  {{ product.badge }}
+                </span>
+              {% endif %}
 
-              <!-- Quick Actions (Wishlist & Quick View) -->
+              <!-- Quick Actions (Wishlist button) -->
               <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
-                <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Wishlist">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button 
+                  type="button" 
+                  class="add-to-wishlist-btn w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors focus:outline-none" 
+                  data-url="{% url 'mainsite:add_to_wishlist' product.id %}"
+                  aria-label="Add to Wishlist">
+                  <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </button>
-                <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
+
+                <a href="{% url 'mainsite:product_detail' product.slug %}" class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-500 hover:text-white transition-colors" aria-label="Quick View">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
-                </button>
+                </a>
               </div>
 
               <!-- Product Image -->
-              <img 
-                src="{% static 'image/frame 570.png' %}" 
-                alt="HAVIT HV-G92 Gamepad" 
-                class="max-h-40 object-contain group-hover:scale-105 transition-transform duration-300">
+              <a href="{% url 'mainsite:product_detail' product.slug %}" class="w-full h-full flex items-center justify-center">
+                {% if product.image %}
+                  <img 
+                    src="{{ product.image.url }}" 
+                    alt="{{ product.name }}" 
+                    class="max-h-40 object-contain group-hover:scale-105 transition-transform duration-300">
+                {% else %}
+                  <img 
+                    src="{% static 'images/placeholder.png' %}" 
+                    alt="{{ product.name }}" 
+                    class="max-h-40 object-contain group-hover:scale-105 transition-transform duration-300">
+                {% endif %}
+              </a>
+            </div>
 
-              <!-- Add to Cart Overlay Button: Hidden by default, shows on hover (or stays visible on non-hover screens) -->
-              <form action="#" method="POST" class="absolute bottom-0 left-0 right-0">
-                {% csrf_token %}
-                <button type="submit" class="w-full bg-black text-white py-2.5 text-sm font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2 hover:bg-red-500">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-                  </svg>
-                  <span>Add To Cart</span>
-                </button>
-              </form>
+            <!-- Add to Cart Button -->
+            <div>
+              <button 
+                type="button" 
+                class="add-to-cart-btn w-full bg-black text-white py-2.5 text-sm font-medium opacity-100 lg:opacity-0 lg:group-hover:opacity-100 duration-300 flex items-center justify-center space-x-2 hover:bg-red-500 transition-colors cursor-pointer"
+                data-product-id="{{ product.id }}"
+                data-url="{% url 'mainsite:add_to_cart' product.id %}">
+                Add to Cart
+              </button>
             </div>
 
             <!-- Product Details -->
             <div class="mt-4 space-y-1">
-              <h3 class="font-semibold text-base text-gray-900 group-hover:text-red-500 transition-colors">HAVIT HV-G92 Gamepad</h3>
+              <h3 class="font-semibold text-base text-gray-900 group-hover:text-red-500 transition-colors">
+                <a href="{% url 'mainsite:product_detail' product.slug %}">{{ product.name }}</a>
+              </h3>
+
               <div class="flex items-center space-x-3 text-sm">
-                <span class="text-red-500 font-semibold">$120</span>
-                <span class="text-gray-400 line-through">$160</span>
+                {% if product.discount_price %}
+                  <span class="text-red-500 font-semibold">${{ product.discount_price }}</span>
+                  <span class="text-gray-400 line-through">${{ product.price }}</span>
+                {% else %}
+                  <span class="text-red-500 font-semibold">${{ product.price }}</span>
+                {% endif %}
               </div>
 
-              <!-- Dynamic Rating Stars -->
+              <!-- Rating -->
               <div class="flex items-center space-x-1 pt-1">
-                <div class="flex text-amber-400">
-                  <!-- 5 Stars (Backend controllable) -->
-                  <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-                  <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-                  <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-                  <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
-                  <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+                <div class="flex items-center">
+                  {% for i in "12345" %}
+                    {% if forloop.counter <= product.rating|default:0 %}
+                      <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                      </svg>
+                    {% else %}
+                      <svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 20 20">
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                      </svg>
+                    {% endif %}
+                  {% endfor %}
                 </div>
-                <span class="text-xs font-semibold text-gray-500 ml-1">(88)</span>
+                <span class="text-xs font-semibold text-gray-500 ml-1">({{ product.review_count|default:0 }})</span>
               </div>
+
             </div>
           </div>
         </div>
+        {% empty %}
+        <div class="col-span-full text-center py-12 text-gray-500">
+          <p class="text-lg">No products found in this category.</p>
+        </div>
+        {% endfor %}
 
       </div>
     </div>
 
   </div>
 </section>
+
+<!-- Alpine.js CDN for hide/show filters functionality -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+<!-- Wishlist AJAX Handler Script -->
+<script>
+  function getCSRFToken() {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, 10) === ('csrftoken=')) {
+          cookieValue = decodeURIComponent(cookie.substring(10));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.add-to-wishlist-btn').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const url = this.getAttribute('data-url');
+        const btn = this;
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCSRFToken(),
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success' || data.status === 'exists') {
+            btn.classList.add('bg-red-500', 'text-white');
+            btn.classList.remove('bg-white');
+            const svg = btn.querySelector('svg');
+            if (svg) svg.setAttribute('fill', 'currentColor');
+          }
+        })
+        .catch(error => console.error('Wishlist Error:', error));
+      });
+    });
+  });
+</script>
 {% endblock content %}
-    

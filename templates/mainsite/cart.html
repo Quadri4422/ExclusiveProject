@@ -2,23 +2,24 @@
 {% load static %}
 
 {% block title %}
-    cart - Exclusive101
+  Cart - Exclusive101
 {% endblock title %}
 
 {% block content %}
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-12">
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans space-y-12" x-data="cartComponent()">
   
   <!-- Breadcrumb Navigation -->
   <nav class="text-xs sm:text-sm text-gray-400 flex items-center space-x-2">
-    <a href="#" class="hover:text-black transition-colors">Home</a>
+    <a href="{% url 'mainsite:categories' %}" class="hover:text-black transition-colors">Home</a>
     <span>/</span>
     <span class="text-black font-medium">Cart</span>
   </nav>
 
+  {% if cart_items %}
   <!-- Cart Table Container -->
   <div class="space-y-6">
     
-    <!-- Table Header (Hidden on small mobile, flex/grid on sm+) -->
+    <!-- Table Header -->
     <div class="hidden sm:grid grid-cols-12 gap-4 items-center bg-white px-8 py-6 rounded shadow-sm text-sm font-medium text-black">
       <div class="col-span-5">Product</div>
       <div class="col-span-2 text-center sm:text-left">Price</div>
@@ -28,91 +29,80 @@
 
     <!-- Cart Items List -->
     <div class="space-y-4">
-      
-      <!-- Cart Item 1: LCD Monitor -->
-      <div class="bg-white px-6 sm:px-8 py-6 rounded shadow-sm flex flex-col sm:grid sm:grid-cols-12 gap-4 items-center text-sm font-normal">
+      {% for item in cart_items %}
+      <div 
+        id="cart-item-{{ item.product.id }}"
+        class="bg-white px-6 sm:px-8 py-6 rounded shadow-sm flex flex-col sm:grid sm:grid-cols-12 gap-4 items-center text-sm font-normal">
+        
         <!-- Product Details -->
         <div class="sm:col-span-5 flex items-center space-x-4 w-full sm:w-auto">
           <div class="relative group shrink-0">
-            <!-- Remove Badge -->
-            <button type="button" class="absolute -top-2 -left-2 bg-[#DB4444] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow hover:scale-110 transition-transform">
+            <!-- Remove Button -->
+            <button 
+              type="button"
+              @click="removeItem({{ item.product.id }}, '{% url 'mainsite:remove_from_cart' item.product.id %}')"
+              class="absolute -top-2 -left-2 bg-[#DB4444] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow hover:scale-110 transition-transform cursor-pointer"
+              title="Remove Item">
               &#10005;
             </button>
-            <img src="{% static 'images/gaming-monitor.png' %}" alt="LCD Monitor" class="w-14 h-14 object-contain">
+            
+            {% if item.product.image %}
+              <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-14 h-14 object-contain">
+            {% else %}
+              <img src="{% static 'images/placeholder.png' %}" alt="{{ item.product.name }}" class="w-14 h-14 object-contain">
+            {% endif %}
           </div>
-          <span class="text-black font-medium truncate">LCD Monitor</span>
+          
+          <a href="{% url 'mainsite:product_detail' item.product.slug %}" class="text-black font-medium truncate hover:text-[#DB4444] transition-colors">
+            {{ item.product.name }}
+          </a>
         </div>
 
         <!-- Price -->
         <div class="sm:col-span-2 flex sm:block justify-between w-full sm:w-auto text-black">
           <span class="sm:hidden text-gray-400">Price:</span>
-          <span>$650</span>
+          <span>
+            ${% if item.product.discount_price %}{{ item.product.discount_price }}{% else %}{{ item.product.price }}{% endif %}
+          </span>
         </div>
 
-        <!-- Quantity -->
+        <!-- Quantity Controls (No Form Element) -->
         <div class="sm:col-span-3 flex justify-center w-full sm:w-auto">
-          <input 
-            type="number" 
-            value="1" 
-            min="1" 
-            class="w-16 h-11 border border-gray-300 rounded text-center text-black focus:outline-none focus:border-black font-medium"
-          >
-        </div>
-
-        <!-- Subtotal -->
-        <div class="sm:col-span-2 flex sm:block justify-between w-full sm:w-auto text-right text-black font-medium">
-          <span class="sm:hidden text-gray-400 font-normal">Subtotal:</span>
-          <span>$650</span>
-        </div>
-      </div>
-
-      <!-- Cart Item 2: H1 Gamepad -->
-      <div class="bg-white px-6 sm:px-8 py-6 rounded shadow-sm flex flex-col sm:grid sm:grid-cols-12 gap-4 items-center text-sm font-normal">
-        <!-- Product Details -->
-        <div class="sm:col-span-5 flex items-center space-x-4 w-full sm:w-auto">
-          <div class="relative group shrink-0">
-            <!-- Remove Badge -->
-            <button type="button" class="absolute -top-2 -left-2 bg-[#DB4444] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow hover:scale-110 transition-transform">
-              &#10005;
+          <div class="flex items-center border border-gray-300 rounded overflow-hidden">
+            <button 
+              type="button" 
+              @click="decrementQuantity({{ item.product.id }}, '{% url 'mainsite:update_cart' item.product.id %}')"
+              class="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-colors">
+              -
             </button>
-            <img src="{% static 'images/gamepad-red.png' %}" alt="H1 Gamepad" class="w-14 h-14 object-contain">
+            <span 
+              id="qty-{{ item.product.id }}" 
+              class="w-12 text-center text-black font-medium py-2">
+              {{ item.quantity }}
+            </span>
+            <button 
+              type="button" 
+              @click="incrementQuantity({{ item.product.id }}, '{% url 'mainsite:update_cart' item.product.id %}')"
+              class="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-colors">
+              +
+            </button>
           </div>
-          <span class="text-black font-medium truncate">H1 Gamepad</span>
-        </div>
-
-        <!-- Price -->
-        <div class="sm:col-span-2 flex sm:block justify-between w-full sm:w-auto text-black">
-          <span class="sm:hidden text-gray-400">Price:</span>
-          <span>$550</span>
-        </div>
-
-        <!-- Quantity -->
-        <div class="sm:col-span-3 flex justify-center w-full sm:w-auto">
-          <input 
-            type="number" 
-            value="2" 
-            min="1" 
-            class="w-16 h-11 border border-gray-300 rounded text-center text-black focus:outline-none focus:border-black font-medium"
-          >
         </div>
 
         <!-- Subtotal -->
         <div class="sm:col-span-2 flex sm:block justify-between w-full sm:w-auto text-right text-black font-medium">
           <span class="sm:hidden text-gray-400 font-normal">Subtotal:</span>
-          <span>$1100</span>
+          <span>${{ item.subtotal }}</span>
         </div>
       </div>
-
+      {% endfor %}
     </div>
 
     <!-- Action Buttons -->
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
-      <a href="#" class="w-full sm:w-auto text-center px-8 py-3.5 border border-gray-400 rounded text-sm font-medium text-black hover:bg-black hover:text-white transition-colors duration-200">
+      <a href="{% url 'mainsite:categories' %}" class="w-full sm:w-auto text-center px-8 py-3.5 border border-gray-400 rounded text-sm font-medium text-black hover:bg-black hover:text-white transition-colors duration-200">
         Return To Shop
       </a>
-      <button type="button" class="w-full sm:w-auto text-center px-8 py-3.5 border border-gray-400 rounded text-sm font-medium text-black hover:bg-black hover:text-white transition-colors duration-200">
-        Update Cart
-      </button>
     </div>
 
   </div>
@@ -124,12 +114,14 @@
     <div class="lg:col-span-7 flex flex-col sm:flex-row items-center gap-4">
       <input 
         type="text" 
+        id="coupon_code"
+        name="coupon_code"
         placeholder="Coupon Code" 
         class="w-full sm:w-72 px-6 py-3.5 border border-black rounded text-sm placeholder-gray-500 focus:outline-none"
       >
       <button 
         type="button" 
-        class="w-full sm:w-auto px-8 py-3.5 bg-[#DB4444] text-white rounded text-sm font-medium hover:bg-red-600 transition-colors duration-200"
+        class="w-full sm:w-auto px-8 py-3.5 bg-[#DB4444] text-white rounded text-sm font-medium hover:bg-red-600 transition-colors duration-200 cursor-pointer"
       >
         Apply Coupon
       </button>
@@ -142,7 +134,7 @@
       <div class="space-y-4 text-sm">
         <div class="flex justify-between items-center pb-3 border-b border-gray-300">
           <span class="text-black">Subtotal:</span>
-          <span class="font-medium text-black">$1750</span>
+          <span class="font-medium text-black">${{ total_price }}</span>
         </div>
         
         <div class="flex justify-between items-center pb-3 border-b border-gray-300">
@@ -151,22 +143,95 @@
         </div>
         
         <div class="flex justify-between items-center">
-          <span class="text-black">Total:</span>
-          <span class="font-medium text-black">$1750</span>
+          <span class="text-black font-semibold">Total:</span>
+          <span class="font-medium text-black">${{ total_price }}</span>
         </div>
       </div>
 
       <div class="text-center pt-2">
-        <button 
-          type="button" 
-          class="w-full sm:w-auto px-10 py-3.5 bg-[#DB4444] text-white rounded text-sm font-medium hover:bg-red-600 transition-colors duration-200"
+        <a 
+          href="{% url 'mainsite:checkout' %}" 
+          class="inline-block w-full text-center px-10 py-3.5 bg-[#DB4444] text-white rounded text-sm font-medium hover:bg-red-600 transition-colors duration-200"
         >
-          Procees to checkout
-        </button>
+          Proceed to checkout
+        </a>
       </div>
     </div>
 
   </div>
 
+  {% else %}
+  <!-- Empty Cart State -->
+  <div class="text-center py-16 bg-white rounded shadow-sm space-y-6">
+    <svg class="w-16 h-16 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+    </svg>
+    <h2 class="text-xl font-bold text-gray-800">Your Cart is Empty</h2>
+    <p class="text-gray-500 text-sm">Looks like you haven't added anything to your cart yet.</p>
+    <a href="{% url 'mainsite:categories' %}" class="inline-block px-8 py-3.5 bg-[#DB4444] text-white rounded text-sm font-medium hover:bg-red-600 transition-colors">
+      Return To Shop
+    </a>
+  </div>
+  {% endif %}
+
 </section>
+
+<!-- Alpine.js Handling standard AJAX calls -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script>
+  function cartComponent() {
+    return {
+      getCsrftoken() {
+        return '{{ csrf_token }}';
+      },
+      updateQuantity(productId, url, newQty) {
+        if (newQty < 1) return;
+        
+        let formData = new FormData();
+        formData.append('quantity', newQty);
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': this.getCsrftoken(),
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            document.getElementById(`qty-${productId}`).innerText = newQty;
+            window.location.reload(); // Reload to refresh exact subtotals and totals
+          }
+        });
+      },
+      incrementQuantity(productId, url) {
+        let currentQty = parseInt(document.getElementById(`qty-${productId}`).innerText) || 1;
+        this.updateQuantity(productId, url, currentQty + 1);
+      },
+      decrementQuantity(productId, url) {
+        let currentQty = parseInt(document.getElementById(`qty-${productId}`).innerText) || 1;
+        if (currentQty > 1) {
+          this.updateQuantity(productId, url, currentQty - 1);
+        }
+      },
+      removeItem(productId, url) {
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': this.getCsrftoken(),
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            window.location.reload();
+          }
+        });
+      }
+    }
+  }
+</script>
 {% endblock content %}

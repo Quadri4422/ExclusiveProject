@@ -114,3 +114,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Fixed: Correct Django email setting
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
